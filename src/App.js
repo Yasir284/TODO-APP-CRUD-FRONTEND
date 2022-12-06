@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { ThemeContext } from "./context/ThemeContext";
+
+// Components
 import MainSection from "./components/MainSection";
 import Navbar from "./components/Navbar";
-import SideBar from "./components/SideBar";
-import { ThemeContext } from "./context/ThemeContext";
+import SignIn from "./components/SignIn";
+import SignUp from "./components/SignUp";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -19,10 +23,12 @@ function App() {
     <>
       <ThemeContext.Provider value={{ theme, setTheme }}>
         <Navbar />
-        <div className="flex flex-row h-[100vh]">
-          <SideBar />
-          <MainSection />
-        </div>
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/todo" />} />
+          <Route path="/todo" element={<MainSection />} />
+          <Route path="/signUp" element={<SignUp />} />
+          <Route path="/signIn" element={<SignIn />} />
+        </Routes>
       </ThemeContext.Provider>
     </>
   );

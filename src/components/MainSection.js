@@ -1,15 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 import {
+  MdAdd,
   MdColorLens,
   MdEditNote,
   MdKeyboardArrowRight,
   MdMoreHoriz,
   MdOutlineDelete,
+  MdSearch,
 } from "react-icons/md";
+import emptySvg from "../images/emptySvg.svg";
 
 export default function MainSection() {
   const [active, setActive] = useState(false);
   const [textTheme, setTextTheme] = useState(null);
+  const [todos, setTodos] = useState(null);
+
+  // Getting Todos
+  const getTodos = async () => {
+    const { data } = await axios
+      .get("http://localhost:4001/todo/v1/getTodos")
+      .catch(console.log("Error in getting todos"));
+    console.log(data.todos);
+
+    setTodos(data.todos);
+  };
+
+  useEffect(() => {
+    getTodos();
+  }, []);
 
   const selectTheme = [
     {
@@ -54,78 +74,78 @@ export default function MainSection() {
   };
 
   const containerStyle = () => {
-    return ["p-12 basis-3/4 bg-[#faf9f8] dark:bg-[#111111]", theme()].join(" ");
+    return ["p-12 basis-3/4 bg-violet-50 dark:bg-black-900", theme()].join(" ");
   };
   console.log(containerStyle());
 
   return (
     <div className={containerStyle()}>
-      <div className="mb-12 flex flex-row items-center gap-6">
-        <h1 className="text-2xl font-semibold">Todo Title</h1>
-        <div className="relative">
-          <button
-            className="flex items-center justify-center rounded-full hover:bg-white dark:hover:bg-[#252423] w-8 h-8"
-            onClick={() => setActive(!active)}
-          >
-            <MdMoreHoriz size="1.2rem" />
+      {/**********HEADING***********/}
+      <div className="mb-12 flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center gap-6">
+          <h1 className="text-2xl font-semibold">TODOS</h1>
+          <div className="relative">
+            <button
+              className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white dark:hover:bg-black-700"
+              onClick={() => setActive(!active)}
+            >
+              <MdMoreHoriz size="1.2rem" />
+            </button>
+
+            <ul
+              className={`absolute left-0 top-8 cursor-pointer flex-col items-start justify-center rounded-md bg-white text-sm shadow-md shadow-slate-400 dark:bg-black-700 dark:shadow-black ${
+                active ? "flex" : "hidden"
+              }`}
+            >
+              <li className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black hover:bg-[#faf9f8] dark:text-white dark:hover:bg-black-500">
+                <MdEditNote size="1.2rem" />
+                <span>Rename List</span>
+              </li>
+
+              <li className="group flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black hover:bg-[#faf9f8] dark:text-white dark:hover:bg-black-500">
+                <MdColorLens size="1.2rem" />
+                <span>Change Theme</span>
+                <MdKeyboardArrowRight size="1.2rem" />
+                <div className="absolute top-12 -right-44 hidden cursor-pointer flex-row gap-4 rounded-md bg-[#faf9f8] px-4 py-4 shadow-md shadow-slate-400 group-hover:flex dark:bg-black-700 dark:shadow-black">
+                  {selectTheme.map(({ style, changeTheme }, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className={style}
+                        onClick={changeTheme}
+                      ></div>
+                    );
+                  })}
+                </div>
+              </li>
+
+              <li className=" flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-red-600 hover:bg-[#faf9f8] dark:hover:bg-black-500">
+                <MdOutlineDelete size="1.2rem" />
+                <span>Delete List</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="flex flex-row items-center gap-6">
+          <form className="flex h-10 flex-row items-center gap-6 rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
+            <input
+              className="bg-transparent"
+              type="search"
+              placeholder="Search todo"
+            />
+            <MdSearch type="submit" size="1.5rem" />
+          </form>
+
+          <button className="h-14 w-14 rounded-full bg-white shadow-md shadow-slate-200 transition-all duration-200 ease-out active:scale-50 dark:bg-black-700 dark:shadow-black">
+            <MdAdd className="m-auto" size="2.5rem" />
           </button>
-
-          <ul
-            className={`absolute left-0 top-8 rounded-md shadow-md shadow-slate-400 dark:shadow-black cursor-pointer text-sm bg-white dark:bg-[#252423] flex-col justify-center items-start ${
-              active ? "flex" : "hidden"
-            }`}
-          >
-            <li className="flex flex-row items-center gap-4 pl-6 py-4 rounded-md text-black dark:text-white hover:bg-[#faf9f8] w-52 dark:hover:bg-[#3b3a39]">
-              <MdEditNote size="1.2rem" />
-              <span>Rename List</span>
-            </li>
-
-            <li className="group flex flex-row items-center gap-4 pl-6 py-4 rounded-md text-black dark:text-white hover:bg-[#faf9f8] w-52 dark:hover:bg-[#3b3a39]">
-              <MdColorLens size="1.2rem" />
-              <span>Change Theme</span>
-              <MdKeyboardArrowRight size="1.2rem" />
-              <div className="absolute top-12 -right-44 group-hover:flex hidden flex-row gap-4 px-4 py-4 rounded-md shadow-md shadow-slate-400 dark:shadow-black cursor-pointer bg-[#faf9f8] dark:bg-[#252423]">
-                {selectTheme.map(({ style, changeTheme }, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={style}
-                      onClick={changeTheme}
-                    ></div>
-                  );
-                })}
-              </div>
-            </li>
-
-            <li className=" flex flex-row items-center gap-4 pl-6 py-4 rounded-md text-red-600 hover:bg-[#faf9f8] w-52 dark:hover:bg-[#3b3a39]">
-              <MdOutlineDelete size="1.2rem" />
-              <span>Delete List</span>
-            </li>
-          </ul>
         </div>
       </div>
 
-      <form className="flex flex-row gap-6">
-        <input
-          type="text"
-          className="basis-2/3 bg-white dark:bg-[#252423] rounded-md w-full p-3 shadow-md shadow-slate-300 dark:shadow-black"
-          placeholder="Add task"
-        />
-        <div className="basis-1/3 bg-[#faf9f8] dark:bg-[#252423] rounded-md w-full p-3 shadow-md shadow-slate-300 dark:shadow-black">
-          <input
-            type="date"
-            className="bg-white dark:bg-[#252423] text-black dark:text-white"
-          />
-          <button
-            type="submit"
-            className="bg-white dark:bg-[#3b3a39] shadow-md shadow-slate-500 dark:shadow-black ml-4 px-4 py-[5px] rounded-md"
-          >
-            Add
-          </button>
-        </div>
-      </form>
-
-      <ul>Get Tasks</ul>
+      <ul>
+        <li></li>
+      </ul>
     </div>
   );
 }

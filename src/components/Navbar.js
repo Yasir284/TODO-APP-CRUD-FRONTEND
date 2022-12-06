@@ -1,67 +1,82 @@
 import React, { useContext } from "react";
-import {
-  FaGithub,
-  FaInstagram,
-  FaLinkedin,
-  FaSun,
-  FaMoon,
-} from "react-icons/fa";
+import { FaSun, FaMoon } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
+import logo from "../images/logo.png";
 
-const socialMedia = [
-  {
-    name: "Github",
-    link: "https://github.com/Yasir284",
-    Icon: FaGithub,
-  },
-  {
-    name: "Instagram",
-    link: "https://www.instagram.com/web_dev_yasir/",
-    Icon: FaInstagram,
-  },
-  {
-    name: "Linkedin",
-    link: "https://www.linkedin.com/in/yasir-lambawala-2b216a1b9/",
-    Icon: FaLinkedin,
-  },
-];
+// const socialMedia = [
+//   {
+//     name: "Github",
+//     link: "https://github.com/Yasir284",
+//     Icon: FaGithub,
+//   },
+//   {
+//     name: "Instagram",
+//     link: "https://www.instagram.com/web_dev_yasir/",
+//     Icon: FaInstagram,
+//   },
+//   {
+//     name: "Linkedin",
+//     link: "https://www.linkedin.com/in/yasir-lambawala-2b216a1b9/",
+//     Icon: FaLinkedin,
+//   },
+// ];
 
 function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);
 
   return (
-    <div className="bg-violet-600 dark:bg-[#1b1a19] px-12 py-4 shadow-md shadow-slate-600 dark:shadow-none flex flex-row justify-between items-center transition-all ease-in-out duration-200">
+    <div className="sticky top-0 right-0 flex flex-row items-center justify-between bg-violet-600 px-12 py-4 shadow-md shadow-slate-600 transition-all duration-200 ease-in-out dark:bg-black-800 dark:shadow-none">
       <div className="flex flex-row items-center gap-6">
-        <h1 className="text-2xl text-white font-extrabold">TODO</h1>
+        <div className="flex flex-row items-center gap-2">
+          <img src={logo} alt="logo" className="w-8" />
+          <h1 className="text-2xl font-extrabold text-white">TODO</h1>
+        </div>
+        {/* <button
+          className="px-4 py-2 rounded-3xl  bg-black-800 dark:bg-violet-600 text-white flex flex-row items-center gap-4 transition-all ease-in-out duration-200 active:scale-50"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? (
+            <FaMoon size="1.5rem" />
+          ) : (
+            <FaSun size="1.5rem" />
+          )}
+          <span>Theme</span>
+        </button> */}
       </div>
 
-      {/* Social media links */}
       <ul className="flex flex-row items-center gap-4">
-        <li>
-          <button
-            className="shadow-md shadow-slate-900 px-4 py-2 rounded-3xl  bg-[#1b1a19] dark:bg-violet-600 text-white flex flex-row items-center gap-4 transition-all ease-in-out duration-200 active:scale-50"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        <li className="flex flex-row items-center gap-2 border-r-2 pr-6">
+          <p className="text-xs text-white">
+            Change <br /> Theme
+          </p>
+          <div
+            className="relative inline-block w-12 select-none align-middle transition duration-200 ease-in"
+            title="Change Theme"
           >
-            {theme === "dark" ? (
-              <FaMoon size="1.5rem" />
-            ) : (
-              <FaSun size="1.5rem" />
-            )}
-            <span>Theme</span>
-          </button>
+            <input
+              type="checkbox"
+              name="toggle"
+              id="toggle"
+              className="toggle-checkbox absolute block h-6 w-6 cursor-pointer appearance-none rounded-full border-4 border-white bg-violet-600 transition-all duration-200 ease-in-out dark:border-black-500 dark:bg-white"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            />
+            <label
+              htmlFor="toggle"
+              className="toggle-label block h-6 cursor-pointer overflow-hidden rounded-full bg-white shadow-md dark:shadow-black"
+            ></label>
+          </div>
         </li>
-        {socialMedia.map(({ name, link, Icon }) => {
-          return (
-            <li
-              key={name}
-              className="text-white transition-all ease-in-out duration-200 active:scale-50"
-            >
-              <a href={link}>
-                <Icon size="2rem" />
-              </a>
-            </li>
-          );
-        })}
+        <NavLink to="/signUp">
+          <li className="font-semibold text-white transition-all duration-200 ease-in-out active:scale-50">
+            Sign up
+          </li>
+        </NavLink>
+        <NavLink to="/signIn">
+          <li className="rounded-3xl bg-white px-4 py-2  font-semibold text-violet-600 transition-all duration-200 ease-in-out active:scale-50 dark:bg-violet-600 dark:text-white">
+            Sign in
+          </li>
+        </NavLink>
       </ul>
     </div>
   );
