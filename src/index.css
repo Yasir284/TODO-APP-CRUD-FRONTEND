@@ -34,38 +34,13 @@ code {
     monospace;
 }
 
-/* ::-webkit-datetime-edit {
-  padding: 1em;
-}
-::-webkit-datetime-edit-fields-wrapper {
-  background: black;
-}
-::-webkit-datetime-edit-text {
-  color: red;
-  padding: 0 0.3em;
-}
-::-webkit-datetime-edit-month-field {
-  color: blue;
-}
-::-webkit-datetime-edit-day-field {
-  color: green;
-}
-::-webkit-datetime-edit-year-field {
-  color: purple;
-} */
-/* ::-webkit-inner-spin-button {
-  display: none;
-} */
-/* ::-webkit-calendar-picker-indicator {
-  background: #dddddd;
-} */
-input[type="date"] {
+/* input[type="date"] {
   padding: 5px;
   background-color: #faf9f8;
   border: none;
   outline: none;
   border-radius: 5px;
-}
+} */
 ::-webkit-calendar-picker-indicator {
   background-color: #ffffff;
   padding: 5px;

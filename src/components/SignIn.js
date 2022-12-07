@@ -1,45 +1,107 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import axios from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { MdArrowBackIosNew } from "react-icons/md";
+axios.defaults.baseURL = "http://localhost:4001";
 
 function SignIn() {
+  const navigate = useNavigate();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const [showPass, setShowPass] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let email = emailRef.current.value;
+    let password = passwordRef.current.value;
+
+    if (!(email && password)) {
+      return toast("All fields are mandatory", { type: "error" });
+    }
+
+    const data = {
+      email,
+      password,
+    };
+    const creatUser = await axios.post("todo/u/signIn", data).catch((error) => {
+      return error.response;
+    });
+    console.log(creatUser);
+
+    if (!creatUser.data.success) {
+      return toast(creatUser.data.message, { type: "error" });
+    }
+
+    toast(creatUser.data.message, { type: "success" });
+
+    emailRef.current.value = "";
+    passwordRef.current.value = "";
+    navigate("/todo");
+  };
+
   return (
-    <div className="flex h-[100vh] w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900">
-      <div className="mb-20 flex w-1/3 flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
+    <div className="flex w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900">
+      <div className="mt-16 flex w-1/3 flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
         <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
           Sign In
         </h1>
         <form
-          action="/todo/v1/u/signIn"
+          onSubmit={handleSubmit}
           className="flex w-full flex-col items-start"
         >
           <label htmlFor="email" className="ml-2 mb-2">
             Email:
           </label>
           <input
+            ref={emailRef}
             type="email"
             name="email"
             placeholder="example@gmail.com"
-            className="mb-8 w-full rounded-2xl bg-white p-2 px-4 text-black dark:bg-black-500 dark:text-white"
+            className="mb-8 w-full rounded-3xl bg-white p-2 px-4 text-black dark:bg-black-500 dark:text-white"
           />
 
           <label htmlFor="password" className="ml-2 mb-2">
             Password:
           </label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            className="mb-14 w-full rounded-2xl bg-white p-2 px-4 text-black dark:bg-black-500 dark:text-white"
-          />
-
-          <NavLink to="/todo" className="mx-auto">
+          <div className="felx-row mb-8 flex w-full justify-between rounded-3xl bg-white p-2 px-4 dark:bg-black-500">
+            <input
+              ref={passwordRef}
+              type={showPass ? "text" : "password"}
+              name="password"
+              placeholder="Enter password"
+              className="bg-white text-black dark:bg-black-500 dark:text-white"
+            />
+            {showPass ? (
+              <FaEye
+                className="text-slate-500"
+                size="1.5rem"
+                onClick={() => setShowPass(false)}
+              />
+            ) : (
+              <FaEyeSlash
+                className="text-slate-500"
+                size="1.5rem"
+                onClick={() => setShowPass(true)}
+              />
+            )}
+          </div>
+          <div className="flex w-full flex-row items-center justify-center gap-6">
+            <NavLink
+              to="/todo"
+              className="rounded-full border-2 border-white p-3 transition-all duration-200 ease-in-out hover:bg-white hover:text-violet-600 dark:hover:text-black"
+            >
+              <MdArrowBackIosNew size="1.5rem" />
+            </NavLink>
             <button
               type="submit"
-              className=" rounded-3xl bg-white px-6 py-2 font-semibold text-violet-600 transition-all duration-200 ease-in-out hover:scale-110 active:scale-50 dark:bg-violet-600 dark:text-white"
+              className="rounded-3xl bg-white px-6 py-3 font-semibold text-violet-600 transition-all duration-200 ease-in-out hover:scale-110 active:scale-50 dark:bg-violet-600 dark:text-white"
             >
               Login
             </button>
-          </NavLink>
+          </div>
         </form>
         <div className="mt-3 text-center text-xs">
           <span className="mr-3">Don't have an account?</span>

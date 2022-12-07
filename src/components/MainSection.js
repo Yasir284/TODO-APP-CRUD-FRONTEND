@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import AddTodo from "./modals/AddTodo";
 
 import {
   MdAdd,
@@ -16,6 +17,7 @@ export default function MainSection() {
   const [active, setActive] = useState(false);
   const [textTheme, setTextTheme] = useState(null);
   const [todos, setTodos] = useState(null);
+  const [showAddTodo, setShowAddTodo] = useState(false);
 
   // Getting Todos
   const getTodos = async () => {
@@ -137,12 +139,19 @@ export default function MainSection() {
             <MdSearch type="submit" size="1.5rem" />
           </form>
 
-          <button className="h-14 w-14 rounded-full bg-white shadow-md shadow-slate-200 transition-all duration-200 ease-out active:scale-50 dark:bg-black-700 dark:shadow-black">
+          <button
+            onClick={() => setShowAddTodo(true)}
+            className="h-14 w-14 rounded-full bg-white shadow-md shadow-slate-200 transition-all duration-200 ease-out active:scale-50 dark:bg-black-700 dark:shadow-black"
+          >
             <MdAdd className="m-auto" size="2.5rem" />
           </button>
         </div>
       </div>
 
+      {/* Add Todo Modal */}
+      <AddTodo showAddTodo={showAddTodo} setShowAddTodo={setShowAddTodo} />
+
+      {/* Todo List */}
       <ul>
         <li></li>
       </ul>

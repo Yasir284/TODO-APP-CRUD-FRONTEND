@@ -26,7 +26,7 @@ function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);
 
   return (
-    <div className="sticky top-0 right-0 flex flex-row items-center justify-between bg-violet-600 px-12 py-4 shadow-md shadow-slate-600 transition-all duration-200 ease-in-out dark:bg-black-800 dark:shadow-none">
+    <div className="sticky top-0 right-0 z-40 flex flex-row items-center justify-between bg-violet-600 px-12 py-4 shadow-md shadow-slate-600 transition-all duration-200 ease-in-out dark:bg-black-800 dark:shadow-none">
       <div className="flex flex-row items-center gap-6">
         <div className="flex flex-row items-center gap-2">
           <img src={logo} alt="logo" className="w-8" />
