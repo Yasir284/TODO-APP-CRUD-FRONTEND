@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AddTodo from "./modals/AddTodo";
+import { UserContext } from "../context/UserContext";
 
 import {
   MdAdd,
+  MdCalendarToday,
   MdColorLens,
   MdEditNote,
   MdKeyboardArrowRight,
@@ -11,19 +13,25 @@ import {
   MdOutlineDelete,
   MdSearch,
 } from "react-icons/md";
+
 import emptySvg from "../images/emptySvg.svg";
+import ProgressBar from "./ProgressBar/ProgressBar";
+
+axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.withCredentials = true;
 
 export default function MainSection() {
   const [active, setActive] = useState(false);
   const [textTheme, setTextTheme] = useState(null);
   const [todos, setTodos] = useState(null);
   const [showAddTodo, setShowAddTodo] = useState(false);
+  const { isSignedIn } = useContext(UserContext);
 
   // Getting Todos
   const getTodos = async () => {
     const { data } = await axios
-      .get("http://localhost:4001/todo/v1/getTodos")
-      .catch(console.log("Error in getting todos"));
+      .get("/todo/v1/getTodos")
+      .catch((error) => error.response);
     console.log(data.todos);
 
     setTodos(data.todos);
@@ -76,7 +84,7 @@ export default function MainSection() {
   };
 
   const containerStyle = () => {
-    return ["p-12 basis-3/4 bg-violet-50 dark:bg-black-900", theme()].join(" ");
+    return ["px-24 py-12 bg-violet-50 dark:bg-black-900", theme()].join(" ");
   };
   console.log(containerStyle());
 
@@ -85,7 +93,7 @@ export default function MainSection() {
       {/**********HEADING***********/}
       <div className="mb-12 flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-6">
-          <h1 className="text-2xl font-semibold">TODOS</h1>
+          <h1 className="text-3xl font-semibold">TODOS</h1>
           <div className="relative">
             <button
               className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white dark:hover:bg-black-700"
@@ -152,8 +160,26 @@ export default function MainSection() {
       <AddTodo showAddTodo={showAddTodo} setShowAddTodo={setShowAddTodo} />
 
       {/* Todo List */}
-      <ul>
-        <li></li>
+      <ul className="">
+        <li className="flex flex-row justify-start text-violet-600">
+          <div className="flex w-2/3 flex-row justify-between rounded-3xl bg-violet-100 p-10 shadow-xl">
+            <div className="">
+              <h1 className="mb-5 text-2xl font-bold">Task</h1>
+              <p className="ml-2 mb-1">
+                🚀 <span>10</span> Tasks
+              </p>
+              <p className="ml-2">
+                🔥<span>1</span> Done
+              </p>
+
+              <div className="ml-2 mt-4 flex flex-row items-center gap-2">
+                <MdCalendarToday />
+                <span>Created at :</span>
+              </div>
+            </div>
+            <ProgressBar />
+          </div>
+        </li>
       </ul>
     </div>
   );

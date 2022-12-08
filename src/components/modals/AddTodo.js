@@ -5,12 +5,14 @@ import { useState } from "react";
 import { MdAdd, MdClose } from "react-icons/md";
 import { toast } from "react-toastify";
 axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.withCredentials = true;
 
 function AddTodo({ showAddTodo, setShowAddTodo }) {
   const titleRef = useRef();
   const taskRef = useRef();
   const [tasks, setTasks] = useState([]);
 
+  // Create Todo
   const createTodo = async () => {
     const title = titleRef.current.value;
     const data = {
@@ -35,12 +37,13 @@ function AddTodo({ showAddTodo, setShowAddTodo }) {
     setTasks([]);
   };
 
+  // Add Task
   const addTask = (e) => {
     e.preventDefault();
-    const newTask = { task: taskRef.current.value };
+    const newTask = { task: taskRef.current.value, taskCreatedAt: Date.now };
 
-    if (!newTask) {
-      return toast("Cann't empty task", { type: "warning" });
+    if (!newTask.task) {
+      return toast("Cann't add empty task", { type: "warning" });
     }
 
     setTasks([...tasks, newTask]);
@@ -48,6 +51,7 @@ function AddTodo({ showAddTodo, setShowAddTodo }) {
     taskRef.current.value = "";
   };
 
+  // Delete Task
   const deleteTask = (index) => {
     const updateTasks = tasks.filter((e, i) => i !== index);
     console.log(updateTasks);
