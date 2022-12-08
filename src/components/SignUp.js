@@ -6,6 +6,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.withCredentials = true;
 
 function SignUp() {
   const navigate = useNavigate();

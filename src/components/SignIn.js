@@ -1,16 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { MdArrowBackIosNew } from "react-icons/md";
+import { UserContext } from "../context/UserContext";
 axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.withCredentials = true;
 
 function SignIn() {
   const navigate = useNavigate();
   const emailRef = useRef();
   const passwordRef = useRef();
   const [showPass, setShowPass] = useState(false);
+  const { setIsSignedIn } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +40,7 @@ function SignIn() {
 
     toast(creatUser.data.message, { type: "success" });
 
+    setIsSignedIn(true);
     emailRef.current.value = "";
     passwordRef.current.value = "";
     navigate("/todo");
