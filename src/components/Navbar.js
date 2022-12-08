@@ -8,24 +8,6 @@ import UserProfile from "./UserProfile";
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
 
-// const socialMedia = [
-//   {
-//     name: "Github",
-//     link: "https://github.com/Yasir284",
-//     Icon: FaGithub,
-//   },
-//   {
-//     name: "Instagram",
-//     link: "https://www.instagram.com/web_dev_yasir/",
-//     Icon: FaInstagram,
-//   },
-//   {
-//     name: "Linkedin",
-//     link: "https://www.linkedin.com/in/yasir-lambawala-2b216a1b9/",
-//     Icon: FaLinkedin,
-//   },
-// ];
-
 function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);
 

@@ -3,8 +3,8 @@ import "./ProgressBar.css";
 
 function ProgressBar() {
   return (
-    <div className="relative flex h-[151px] w-[151px] items-center justify-center rounded-full bg-violet-50 bg-transparent p-3 shadow-xl shadow-slate-500 dark:bg-black-900 dark:shadow-slate-400">
-      <div className="dark:black-900 flex h-full w-full flex-col items-center justify-center rounded-full bg-violet-50 font-bold text-violet-600 shadow-inner shadow-slate-200 dark:bg-black-900 dark:shadow-black-500">
+    <div className="relative flex h-[151px] w-[151px] items-center justify-center rounded-full bg-violet-50 bg-transparent p-3 shadow-xl shadow-slate-500 dark:bg-black-700 dark:shadow-black">
+      <div className="dark:black-900 flex h-full w-full flex-col items-center justify-center rounded-full bg-violet-100 font-bold text-violet-600 shadow-inner shadow-slate-300 dark:bg-black-700 dark:shadow-black-500">
         <p className="font">60%</p>
         <p>Done</p>
       </div>

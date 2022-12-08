@@ -34,12 +34,12 @@ function App() {
     const res = await axios
       .get("/todo/u/isSignedIn")
       .catch((error) => error.response);
-    console.log(res);
+    console.log("signIn response:", res);
 
-    if (!res.data.success) {
-      return setIsSignedIn(false);
+    if (res.data.success) {
+      return setIsSignedIn(true);
     }
-    setIsSignedIn(true);
+    setIsSignedIn(false);
   };
 
   useEffect(() => {
