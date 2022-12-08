@@ -1,8 +1,12 @@
+import axios from "axios";
 import React, { useContext } from "react";
-import { FaSun, FaMoon } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
+import { UserContext } from "../context/UserContext";
 import logo from "../images/logo.png";
+import UserProfile from "./UserProfile";
+axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.withCredentials = true;
 
 // const socialMedia = [
 //   {
@@ -25,6 +29,7 @@ import logo from "../images/logo.png";
 function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);
 
+  const { isSignedIn, setIsSignedIn } = useContext(UserContext);
   return (
     <div className="sticky top-0 right-0 z-40 flex flex-row items-center justify-between bg-violet-600 px-12 py-4 shadow-md shadow-slate-600 transition-all duration-200 ease-in-out dark:bg-black-800 dark:shadow-none">
       <div className="flex flex-row items-center gap-6">
@@ -32,17 +37,6 @@ function Navbar() {
           <img src={logo} alt="logo" className="w-8" />
           <h1 className="text-2xl font-extrabold text-white">TODO</h1>
         </div>
-        {/* <button
-          className="px-4 py-2 rounded-3xl  bg-black-800 dark:bg-violet-600 text-white flex flex-row items-center gap-4 transition-all ease-in-out duration-200 active:scale-50"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        >
-          {theme === "dark" ? (
-            <FaMoon size="1.5rem" />
-          ) : (
-            <FaSun size="1.5rem" />
-          )}
-          <span>Theme</span>
-        </button> */}
       </div>
 
       <ul className="flex flex-row items-center gap-4">
@@ -67,16 +61,23 @@ function Navbar() {
             ></label>
           </div>
         </li>
-        <NavLink to="/signUp">
-          <li className="font-semibold text-white transition-all duration-200 ease-in-out active:scale-50">
-            Sign up
-          </li>
-        </NavLink>
-        <NavLink to="/signIn">
-          <li className="rounded-3xl bg-white px-4 py-2  font-semibold text-violet-600 transition-all duration-200 ease-in-out active:scale-50 dark:bg-violet-600 dark:text-white">
-            Sign in
-          </li>
-        </NavLink>
+
+        {isSignedIn ? (
+          <UserProfile isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />
+        ) : (
+          <>
+            <NavLink to="/signUp">
+              <li className="font-semibold text-white transition-all duration-200 ease-in-out active:scale-50">
+                Sign up
+              </li>
+            </NavLink>
+            <NavLink to="/signIn">
+              <li className="rounded-3xl bg-white px-4 py-2  font-semibold text-violet-600 transition-all duration-200 ease-in-out active:scale-50 dark:bg-violet-600 dark:text-white">
+                Sign in
+              </li>
+            </NavLink>
+          </>
+        )}
       </ul>
     </div>
   );
