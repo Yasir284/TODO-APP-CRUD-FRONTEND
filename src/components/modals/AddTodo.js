@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
 
-function AddTodo({ showAddTodo, setShowAddTodo }) {
+function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   const titleRef = useRef();
   const taskRef = useRef();
   const [tasks, setTasks] = useState([]);
@@ -29,6 +29,8 @@ function AddTodo({ showAddTodo, setShowAddTodo }) {
     if (!todo.data.success) {
       return toast(todo.data.message, { type: "error" });
     }
+
+    setTodos([...todos, todo.data.todo]);
 
     toast(todo.data.message, { type: "success" });
 

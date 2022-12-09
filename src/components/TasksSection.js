@@ -1,131 +1,250 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useState, useRef } from "react";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
+
 import {
+  MdArrowBackIosNew,
   MdColorLens,
   MdEditNote,
   MdKeyboardArrowRight,
   MdMoreHoriz,
+  MdOutlineArrowDropDown,
+  MdOutlineCircle,
   MdOutlineDelete,
+  MdSearch,
 } from "react-icons/md";
+import { RiDeleteBin6Fill, RiEditBoxLine } from "react-icons/ri";
+import { NavLink, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+
+axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.withCredentials = true;
+
+const taskListVarient = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { ease: "easeInOut", duration: 1 } },
+};
 
 export default function TasksSection() {
   const [active, setActive] = useState(false);
-  const [textTheme, setTextTheme] = useState(null);
+  const [todo, setTodo] = useState(null);
+  const [theme, setTheme] = useState("black");
+  const { todoId } = useParams();
+  const taskRef = useRef();
+
+  // Getting todo by id
+  const todoById = async () => {
+    const { data } = await axios
+      .get(`/todo/tasks/getTodoById/${todoId}`)
+      .catch((error) => error.response);
+    console.log("Todo by id :", data);
+
+    if (!data.success) {
+      return toast(data.message, { type: "error" });
+    }
+
+    setTheme(data.todo[0].todoTheme);
+    setTodo(data.todo[0]);
+  };
+
+  // Add Task
+  const addTask = async (e) => {
+    e.preventDefault();
+
+    if (!taskRef.current.value) {
+      return toast("Cann't add empty task", { type: "warning" });
+    }
+
+    const res = await axios
+      .put(`/todo/tasks/createTask/${todoId}`, { task: taskRef.current.value })
+      .catch((error) => error.response);
+
+    if (!res.data.success) {
+      return toast(res.data.message, { type: "error" });
+    }
+
+    toast("Task added successfully", { type: "success" });
+
+    taskRef.current.value = "";
+  };
+
+  useEffect(() => {
+    todoById();
+  }, []);
+
+  // Delete Task
+
+  // Update Theme
+  const updateTheme = async (theme) => {
+    const res = await axios
+      .put(`/todo/updateTodo/${todoId}`, { todoTheme: theme })
+      .catch((error) => error.response);
+    console.log("updated theme:", res);
+
+    if (!res.data.success) {
+      return toast("Failed to change theme", { type: "error" });
+    }
+
+    setTheme(theme);
+    todoById();
+    console.log(todo);
+
+    toast("Todo theme changed", { type: "info" });
+  };
 
   const selectTheme = [
     {
       style:
-        "shadow-lg hover:shadow-slate-400 dark:shadow-black active:scale-50 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-violet-600",
-      changeTheme: () => setTextTheme("violet"),
+        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-violet-600",
+      changeTheme: () => updateTheme("violet"),
     },
     {
       style:
-        "shadow-lg hover:shadow-slate-400 dark:shadow-black active:scale-50 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-red-600",
-      changeTheme: () => setTextTheme("red"),
+        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-red-600",
+      changeTheme: () => updateTheme("red"),
     },
     {
       style:
-        "shadow-lg hover:shadow-slate-400 dark:shadow-black active:scale-50 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-green-600",
-      changeTheme: () => setTextTheme("green"),
+        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-green-600",
+      changeTheme: () => updateTheme("green"),
     },
     {
       style:
-        "shadow-lg hover:shadow-slate-400 dark:shadow-black active:scale-50 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-blue-600",
-      changeTheme: () => setTextTheme("blue"),
+        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-blue-600",
+      changeTheme: () => updateTheme("blue"),
     },
   ];
 
-  const theme = () => {
-    switch (textTheme) {
-      case "violet":
-        return "text-violet-600";
-
-      case "red":
-        return "text-red-600";
-
-      case "green":
-        return "text-green-600";
-
-      case "blue":
-        return "text-blue-600";
-
-      default:
-        return "text-black dark:text-white";
-    }
-  };
-
-  const containerStyle = () => {
-    return ["p-12 basis-3/4 bg-[#faf9f8] dark:bg-[#111111]", theme()].join(" ");
-  };
-  console.log(containerStyle());
-
   return (
-    <div className={containerStyle()}>
-      <div className="mb-12 flex flex-row items-center gap-6">
-        <h1 className="text-2xl font-semibold">Todo Title</h1>
-        <div className="relative">
+    <div className="relative flex flex-row justify-center">
+      <div
+        className={`w-[80%] basis-3/4 bg-violet-50 p-12 dark:bg-black-900 text-${theme}-600`}
+      >
+        {/**********HEADING***********/}
+        <div className="mb-12 flex flex-row items-center justify-between border-b-2 pb-2">
+          <div className="flex flex-row items-center gap-6">
+            <h1 className="text-3xl font-extrabold">TODOS</h1>
+            <div className="relative">
+              <button
+                className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white dark:hover:bg-black-700"
+                onClick={() => setActive(!active)}
+              >
+                <MdMoreHoriz size="1.2rem" />
+              </button>
+
+              <ul
+                className={`absolute left-0 top-8 cursor-pointer flex-col items-start justify-center rounded-md bg-white text-sm shadow-md shadow-slate-400 dark:bg-black-700 dark:shadow-black ${
+                  active ? "flex" : "hidden"
+                }`}
+              >
+                <li className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-slate-50 dark:text-white dark:hover:bg-black-500">
+                  <MdEditNote size="1.2rem" />
+                  <span>Rename List</span>
+                </li>
+
+                <li className="group flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-slate-50 dark:text-white dark:hover:bg-black-500">
+                  <MdColorLens size="1.2rem" />
+                  <span>Change Theme</span>
+                  <MdKeyboardArrowRight size="1.2rem" />
+
+                  <div className="absolute top-12 -right-44 hidden cursor-pointer flex-row gap-4 rounded-md bg-white px-4 py-4 shadow-md shadow-slate-400 group-hover:flex dark:bg-black-700 dark:shadow-black">
+                    {selectTheme.map(({ style, changeTheme }, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className={style}
+                          onClick={changeTheme}
+                        ></div>
+                      );
+                    })}
+                  </div>
+                </li>
+
+                <li className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-red-600 transition-all duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-black-500">
+                  <MdOutlineDelete size="1.2rem" />
+                  <span>Delete List</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex flex-row items-center gap-6">
+            <form className="flex h-10 flex-row items-center gap-6 rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
+              <input
+                className="bg-transparent"
+                type="search"
+                placeholder="Search task"
+              />
+              <MdSearch type="submit" size="1.5rem" />
+            </form>
+          </div>
+        </div>
+
+        {/* Add Task form */}
+        <form className="flex flex-row gap-6" onSubmit={addTask}>
+          <input
+            ref={taskRef}
+            type="text"
+            className="w-full rounded-md bg-white p-3 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
+            placeholder="Add task"
+          />
+
           <button
-            className="flex items-center justify-center rounded-full hover:bg-white dark:hover:bg-black-700 w-8 h-8"
-            onClick={() => setActive(!active)}
+            type="submit"
+            className="ml-4 rounded-md bg-white px-4 py-[5px] shadow-md shadow-slate-200 transition-all duration-200 ease-in-out active:scale-50 dark:bg-black-700 dark:shadow-black"
           >
-            <MdMoreHoriz size="1.2rem" />
+            Add
           </button>
+        </form>
 
-          <ul
-            className={`absolute left-0 top-8 rounded-md shadow-md shadow-slate-400 dark:shadow-black cursor-pointer text-sm bg-white dark:bg-black-700 flex-col justify-center items-start ${
-              active ? "flex" : "hidden"
-            }`}
-          >
-            <li className="flex flex-row items-center gap-4 pl-6 py-4 rounded-md text-black dark:text-white hover:bg-[#faf9f8] w-52 dark:hover:bg-black-500">
-              <MdEditNote size="1.2rem" />
-              <span>Rename List</span>
-            </li>
-
-            <li className="group flex flex-row items-center gap-4 pl-6 py-4 rounded-md text-black dark:text-white hover:bg-[#faf9f8] w-52 dark:hover:bg-black-500">
-              <MdColorLens size="1.2rem" />
-              <span>Change Theme</span>
-              <MdKeyboardArrowRight size="1.2rem" />
-              <div className="absolute top-12 -right-44 group-hover:flex hidden flex-row gap-4 px-4 py-4 rounded-md shadow-md shadow-slate-400 dark:shadow-black cursor-pointer bg-[#faf9f8] dark:bg-black-700">
-                {selectTheme.map(({ style, changeTheme }, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={style}
-                      onClick={changeTheme}
-                    ></div>
-                  );
-                })}
-              </div>
-            </li>
-
-            <li className=" flex flex-row items-center gap-4 pl-6 py-4 rounded-md text-red-600 hover:bg-[#faf9f8] w-52 dark:hover:bg-black-500">
-              <MdOutlineDelete size="1.2rem" />
-              <span>Delete List</span>
-            </li>
+        {/* Tasks */}
+        <div className="mt-10">
+          <div className="border-b-2">
+            <MdOutlineArrowDropDown
+              size="1.5rem"
+              className="mr-2 inline-block"
+            />
+            <p className="inline-block">In progress</p>
+          </div>
+          <ul className="my-6">
+            {todo && todo.tasks.length > 0
+              ? todo.tasks.map((e) => (
+                  <motion.li
+                    variants={taskListVarient}
+                    initial="initial"
+                    animate="animate"
+                    layout
+                    key={e._id}
+                    className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 shadow-md shadow-slate-200  hover:bg-slate-50 dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
+                  >
+                    <div className="flex flex-row items-center gap-2">
+                      <MdOutlineCircle size="1.5rem" />
+                      <p>{e.task}</p>
+                    </div>
+                    <div className="flex flex-row items-center gap-2">
+                      <RiEditBoxLine
+                        className="text-emerald-400"
+                        size="1.5rem"
+                      />
+                      <RiDeleteBin6Fill
+                        className="text-red-400"
+                        size="1.5rem"
+                      />
+                    </div>
+                  </motion.li>
+                ))
+              : ""}
           </ul>
         </div>
       </div>
 
-      <form className="flex flex-row gap-6">
-        <input
-          type="text"
-          className="basis-2/3 bg-white dark:bg-black-700 rounded-md w-full p-3 shadow-md shadow-slate-300 dark:shadow-black"
-          placeholder="Add task"
-        />
-        <div className="basis-1/3 bg-[#faf9f8] dark:bg-black-700 rounded-md w-full p-3 shadow-md shadow-slate-300 dark:shadow-black">
-          <input
-            type="date"
-            className="bg-white dark:bg-black-700 text-black dark:text-white"
-          />
-          <button
-            type="submit"
-            className="bg-white dark:bg-black-500 shadow-md shadow-slate-500 dark:shadow-black ml-4 px-4 py-[5px] rounded-md"
-          >
-            Add
-          </button>
-        </div>
-      </form>
-
-      <ul>Get Tasks</ul>
+      <NavLink
+        to="/"
+        className={`fixed left-[10%] top-[50%] my-auto rounded-full border-2 p-3 transition-all duration-200 ease-in-out hover:bg-violet-600 hover:text-white dark:hover:text-black`}
+      >
+        <MdArrowBackIosNew size="1.5rem" />
+      </NavLink>
     </div>
   );
 }

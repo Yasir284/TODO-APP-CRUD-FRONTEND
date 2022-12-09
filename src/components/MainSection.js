@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AddTodo from "./modals/AddTodo";
-import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 
 import {
@@ -17,6 +16,7 @@ import {
 
 import emptySvg from "../images/emptySvg.svg";
 import ProgressBar from "./ProgressBar/ProgressBar";
+import { NavLink } from "react-router-dom";
 
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
@@ -30,9 +30,9 @@ export default function MainSection() {
   // Getting Todos
   const getTodos = async () => {
     const res = await axios
-      .get("/todo/v1/getTodos")
+      .get("/todo/getTodos")
       .catch((error) => error.response);
-    console.log(res);
+    console.log("todos response:", res);
 
     if (!res.data.success) {
       return toast(res.data.message, { type: "error" });
@@ -43,7 +43,7 @@ export default function MainSection() {
 
   useEffect(() => {
     getTodos();
-  }, []);
+  }, [setTodos]);
 
   const selectTheme = [
     {
@@ -88,9 +88,7 @@ export default function MainSection() {
   };
 
   const containerStyle = () => {
-    return ["px-32 w-[80%] py-12 bg-violet-50 dark:bg-black-900", theme()].join(
-      " "
-    );
+    return ["px-32 py-12 bg-violet-50 dark:bg-black-900", theme()].join(" ");
   };
 
   return (
@@ -163,33 +161,61 @@ export default function MainSection() {
         </div>
 
         {/* Add Todo Modal */}
-        <AddTodo showAddTodo={showAddTodo} setShowAddTodo={setShowAddTodo} />
+        <AddTodo
+          showAddTodo={showAddTodo}
+          setShowAddTodo={setShowAddTodo}
+          setTodos={setTodos}
+          todos={todos}
+        />
 
         {/* Todo List */}
         {todos && todos.length > 0 ? (
-          <ul className="flex flex-col gap-12">
-            <li className="flex flex-row justify-center text-violet-700">
-              <div className="flex w-2/3 flex-row justify-between rounded-3xl bg-violet-100 p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
-                <div className="">
-                  <h1 className="mb-5 text-2xl font-bold">Task</h1>
-                  <p className="ml-2 mb-1">
-                    🚀 <span>10</span> Tasks
-                  </p>
-                  <p className="ml-2">
-                    🔥<span>1</span> Done
-                  </p>
+          <ul className="flex flex-row flex-wrap justify-center gap-12">
+            {todos.map((todo) => (
+              <NavLink to={`/todo/tasks/${todo._id}`}>
+                <li
+                  key={todo._id}
+                  className="flex flex-row text-violet-700 dark:text-white"
+                >
+                  <div className="flex flex-row justify-between rounded-3xl bg-violet-100 p-10 shadow-xl shadow-slate-300 transition-all duration-200 ease-in-out hover:scale-105 dark:bg-black-700 dark:shadow-black">
+                    <div className="">
+                      <h1 className="mb-5 text-2xl font-bold">{todo.title}</h1>
+                      <p className="ml-2 mb-1">
+                        🚀 <span>{todo.tasks.length}</span> Tasks
+                      </p>
+                      <p className="ml-2">
+                        🔥
+                        <span>
+                          {todo.tasks.filter((e) => e.isCompleted).length}
+                        </span>{" "}
+                        Done
+                      </p>
 
-                  <div className="ml-2 mt-4 flex flex-row items-center gap-2">
-                    <MdCalendarToday />
-                    <span>Created at :</span>
+                      <div className="ml-2 mt-4 flex flex-row items-center gap-2">
+                        <MdCalendarToday />
+                        <span>
+                          Created at :{" "}
+                          {new Date(todo.created_at).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <ProgressBar
+                      percentage={
+                        (todo.tasks.filter((e) => e.isCompleted).length * 100) /
+                        todo.tasks.length
+                      }
+                    />
                   </div>
-                </div>
-                <ProgressBar />
-              </div>
-            </li>
+                </li>
+              </NavLink>
+            ))}
           </ul>
         ) : (
-          <img src={emptySvg} alt="empty svg" className="mx-auto w-[55%]" />
+          <img
+            src={emptySvg}
+            alt="empty svg"
+            className="mx-auto w-[55%] animate-pulse"
+          />
         )}
       </div>
     </div>

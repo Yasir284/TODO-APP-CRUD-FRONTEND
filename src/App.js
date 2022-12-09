@@ -13,6 +13,7 @@ import MainSection from "./components/MainSection";
 import Navbar from "./components/Navbar";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import TasksSection from "./components/TasksSection";
 
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
@@ -61,6 +62,7 @@ function App() {
             <Route path="/todo" element={<MainSection />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/signIn" element={<SignIn />} />
+            <Route path="/todo/tasks/:todoId" element={<TasksSection />} />
           </Routes>
         </ThemeContext.Provider>
       </UserContext.Provider>
