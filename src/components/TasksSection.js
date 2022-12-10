@@ -17,6 +17,7 @@ import {
 import { RiDeleteBin6Fill, RiEditBoxLine } from "react-icons/ri";
 import { NavLink, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useCallback } from "react";
 
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
@@ -34,9 +35,9 @@ export default function TasksSection() {
   const taskRef = useRef();
 
   // Getting todo by id
-  const todoById = async () => {
+  const todoById = async (id) => {
     const { data } = await axios
-      .get(`/todo/tasks/getTodoById/${todoId}`)
+      .get(`/todo/tasks/getTodoById/${id}`)
       .catch((error) => error.response);
     console.log("Todo by id :", data);
 
@@ -59,21 +60,16 @@ export default function TasksSection() {
     const res = await axios
       .put(`/todo/tasks/createTask/${todoId}`, { task: taskRef.current.value })
       .catch((error) => error.response);
-
+    console.log(res);
     if (!res.data.success) {
       return toast(res.data.message, { type: "error" });
     }
 
+    todoById(todoId);
     toast("Task added successfully", { type: "success" });
 
     taskRef.current.value = "";
   };
-
-  useEffect(() => {
-    todoById();
-  }, []);
-
-  // Delete Task
 
   // Update Theme
   const updateTheme = async (theme) => {
@@ -87,11 +83,17 @@ export default function TasksSection() {
     }
 
     setTheme(theme);
-    todoById();
+    todoById(todoId);
     console.log(todo);
 
     toast("Todo theme changed", { type: "info" });
   };
+
+  // Delete Task
+
+  useEffect(() => {
+    todoById(todoId);
+  }, [todoId, setTodo]);
 
   const selectTheme = [
     {
@@ -237,11 +239,53 @@ export default function TasksSection() {
               : ""}
           </ul>
         </div>
+
+        <div className="mt-10">
+          <div className="border-b-2">
+            <MdOutlineArrowDropDown
+              size="1.5rem"
+              className="mr-2 inline-block"
+            />
+            <p className="inline-block">Completed</p>
+          </div>
+          <ul className="my-6">
+            {todo && todo.tasks.length > 0
+              ? todo.tasks
+                  .filter((e) => e.isCompleted)
+                  .map((e) => (
+                    <motion.li
+                      variants={taskListVarient}
+                      initial="initial"
+                      animate="animate"
+                      layout
+                      key={e._id}
+                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 shadow-md shadow-slate-200  hover:bg-slate-50 dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
+                    >
+                      <div className="flex flex-row items-center gap-2">
+                        <MdOutlineCircle size="1.5rem" />
+                        <p>{e.task}</p>
+                      </div>
+                      <div className="flex flex-row items-center gap-2">
+                        <RiEditBoxLine
+                          className="text-emerald-400"
+                          size="1.5rem"
+                        />
+                        <RiDeleteBin6Fill
+                          className="text-red-400"
+                          size="1.5rem"
+                        />
+                      </div>
+                    </motion.li>
+                  ))
+              : ""}
+          </ul>
+        </div>
       </div>
 
+      {/* Back button */}
       <NavLink
         to="/"
-        className={`fixed left-[10%] top-[50%] my-auto rounded-full border-2 p-3 transition-all duration-200 ease-in-out hover:bg-violet-600 hover:text-white dark:hover:text-black`}
+        className={`fixed left-[5%] top-[50%] my-auto rounded-full border-2 p-3 shadow-md shadow-slate-200 transition-all duration-200 ease-in-out hover:bg-violet-600 hover:text-white dark:text-white dark:shadow-black dark:hover:bg-white dark:hover:text-black`}
       >
         <MdArrowBackIosNew size="1.5rem" />
       </NavLink>

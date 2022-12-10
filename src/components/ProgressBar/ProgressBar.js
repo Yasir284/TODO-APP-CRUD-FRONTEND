@@ -5,8 +5,14 @@ function ProgressBar({ percentage }) {
   return (
     <div className="relative flex h-[151px] w-[151px] items-center justify-center rounded-full bg-violet-50 bg-transparent p-3 shadow-xl shadow-slate-500 dark:bg-black-700 dark:shadow-black">
       <div className="dark:black-900 flex h-full w-full flex-col items-center justify-center rounded-full bg-violet-100 font-bold text-violet-600 shadow-inner shadow-slate-300 dark:bg-black-700 dark:shadow-black-500">
-        <p className="font">60%</p>
-        <p>Done</p>
+        {percentage <= 100 ? (
+          <>
+            <p className="font text-2xl">{percentage}%</p>
+            <p className="text-sm">Done</p>
+          </>
+        ) : (
+          <p className="text-3xl text-green-600">Done</p>
+        )}
       </div>
 
       <svg
