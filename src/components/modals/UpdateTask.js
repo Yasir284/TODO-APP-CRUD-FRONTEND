@@ -1,7 +1,74 @@
-import React from "react";
+import React, { useRef } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { MdClose } from "react-icons/md";
 
-function UpdateTask() {
-  return <div>UpdateTask</div>;
+axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.withCredentials = true;
+
+function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
+  console.log(updateModal);
+  const editTaskRef = useRef();
+
+  // Edit Task
+  const editTask = async () => {
+    const newTask = editTaskRef.current.value;
+
+    if (!newTask) {
+      return toast("Add task first", { type: "warning" });
+    }
+
+    const { data } = await axios
+      .put(`/todo/tasks/updateTask/${todoId}/${updateModal.taskId}`, {
+        task: newTask,
+      })
+      .catch((error) => error.response);
+
+    if (!data.success) {
+      return toast(data.message, { type: "error" });
+    }
+
+    todoById(todoId);
+    setUpdateModal({ active: false, taskId: null });
+    toast("Task edited successfully", { type: "info" });
+  };
+
+  return (
+    <>
+      {updateModal.active && (
+        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white bg-opacity-10 text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
+          <div className="relative flex w-1/3 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
+            <MdClose
+              size="1.5rem"
+              className="absolute top-6 right-10"
+              onClick={() => setUpdateModal({ active: false, taskId: null })}
+            />
+
+            <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
+              Edit Task
+            </h1>
+            <div className="w-full">
+              <input
+                ref={editTaskRef}
+                type="text"
+                placeholder="Edit Task"
+                className="mb-10 w-full border-b-2 bg-transparent text-xl placeholder:text-white"
+              />
+
+              <div className="flex flex-row items-center justify-center gap-4 font-semibold">
+                <button
+                  onClick={editTask}
+                  className="w-full rounded-md border-2 border-white px-4 py-1 transition-all duration-200 ease-in-out hover:bg-white hover:text-violet-600 active:scale-50 dark:hover:text-black"
+                >
+                  Update Task
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
 
 export default UpdateTask;

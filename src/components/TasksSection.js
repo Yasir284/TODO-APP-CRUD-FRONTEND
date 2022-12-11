@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 
 import {
   MdArrowBackIosNew,
+  MdClose,
   MdColorLens,
   MdEditNote,
   MdKeyboardArrowRight,
@@ -13,11 +14,16 @@ import {
   MdOutlineCircle,
   MdOutlineDelete,
   MdSearch,
+  MdStarOutline,
 } from "react-icons/md";
-import { RiDeleteBin6Fill, RiEditBoxLine } from "react-icons/ri";
+import {
+  RiDeleteBin6Fill,
+  RiDeleteBin6Line,
+  RiEditBoxLine,
+} from "react-icons/ri";
 import { NavLink, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useCallback } from "react";
+import UpdateTask from "./modals/UpdateTask";
 
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
@@ -30,6 +36,10 @@ const taskListVarient = {
 export default function TasksSection() {
   const [active, setActive] = useState(false);
   const [todo, setTodo] = useState(null);
+  const [updateModal, setUpdateModal] = useState({
+    active: false,
+    taskId: null,
+  });
   const [theme, setTheme] = useState("black");
   const { todoId } = useParams();
   const taskRef = useRef();
@@ -90,6 +100,32 @@ export default function TasksSection() {
   };
 
   // Delete Task
+  const deleteTask = async (taskId) => {
+    const { data } = await axios
+      .delete(`/todo/tasks/deleteTask/${todoId}/${taskId}`)
+      .catch((error) => error.response);
+
+    if (!data.success) {
+      return toast("Failed to delete task", { type: "error" });
+    }
+
+    todoById(todoId);
+    toast("Task deleted", { type: "info" });
+  };
+
+  // // Edit Task
+  // const editTask = async (taskId) => {
+  //   const { data } = await axios
+  //     .put(`/todo/tasks/updateTask/${todoId}/${taskId}`)
+  //     .catch((error) => error.response);
+
+  //   if (!data.success) {
+  //     return toast("Failed to delete task", { type: "error" });
+  //   }
+
+  //   todoById(todoId);
+  //   toast("Task deleted", { type: "info" });
+  // };
 
   useEffect(() => {
     todoById(todoId);
@@ -126,13 +162,19 @@ export default function TasksSection() {
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 pb-2">
           <div className="flex flex-row items-center gap-6">
-            <h1 className="text-3xl font-extrabold">TODOS</h1>
+            <h1 className="text-3xl font-extrabold">
+              {todo ? todo.title : "Title"}
+            </h1>
             <div className="relative">
               <button
                 className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white dark:hover:bg-black-700"
                 onClick={() => setActive(!active)}
               >
-                <MdMoreHoriz size="1.2rem" />
+                {active ? (
+                  <MdClose size="1.2rem" />
+                ) : (
+                  <MdMoreHoriz size="1.2rem" />
+                )}
               </button>
 
               <ul
@@ -226,12 +268,22 @@ export default function TasksSection() {
                     </div>
                     <div className="flex flex-row items-center gap-2">
                       <RiEditBoxLine
+                        onClick={() => {
+                          setUpdateModal({ active: true, taskId: e._id });
+                        }}
+                        title="Edit Task"
                         className="text-emerald-400"
                         size="1.5rem"
                       />
-                      <RiDeleteBin6Fill
+                      <RiDeleteBin6Line
+                        onClick={() => deleteTask(e._id)}
+                        title="Delete Task"
                         className="text-red-400"
                         size="1.5rem"
+                      />
+                      <MdStarOutline
+                        size="1.5rem"
+                        className={`dark:text-white text-${theme}`}
                       />
                     </div>
                   </motion.li>
@@ -281,6 +333,14 @@ export default function TasksSection() {
           </ul>
         </div>
       </div>
+
+      {/* Update Task Modal */}
+      <UpdateTask
+        updateModal={updateModal}
+        setUpdateModal={setUpdateModal}
+        todoId={todoId}
+        todoById={todoById}
+      />
 
       {/* Back button */}
       <NavLink

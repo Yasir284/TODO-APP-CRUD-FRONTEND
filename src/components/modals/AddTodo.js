@@ -42,7 +42,7 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   // Add Task
   const addTask = (e) => {
     e.preventDefault();
-    const newTask = { task: taskRef.current.value, taskCreatedAt: Date.now };
+    const newTask = { task: taskRef.current.value, taskCreatedAt: Date.now() };
 
     if (!newTask.task) {
       return toast("Cann't add empty task", { type: "warning" });
@@ -64,7 +64,7 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   return (
     <>
       {showAddTodo && (
-        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-50 text-white">
+        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white bg-opacity-10 text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
           <div className="relative flex w-1/3 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
             <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
               Create Todo

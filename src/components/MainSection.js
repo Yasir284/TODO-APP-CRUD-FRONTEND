@@ -97,7 +97,7 @@ export default function MainSection() {
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 border-violet-600 pb-2 text-violet-600 dark:border-white dark:text-white">
           <div className="flex flex-row items-center gap-6">
-            <h1 className="text-3xl font-extrabold">TODOS</h1>
+            <h1 className="text-3xl font-extrabold">Your Todos</h1>
             <div className="relative">
               <button
                 className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white dark:hover:bg-black-700"
@@ -177,7 +177,7 @@ export default function MainSection() {
                   key={todo._id}
                   className="flex flex-row text-violet-700 dark:text-white"
                 >
-                  <div className="flex flex-row justify-between rounded-3xl bg-violet-100 p-10 shadow-xl shadow-slate-300 transition-all duration-200 ease-in-out hover:scale-105 dark:bg-black-700 dark:shadow-black">
+                  <div className="flex flex-row justify-between rounded-3xl bg-violet-100 p-10 shadow-xl shadow-slate-300 transition-all duration-200 ease-in-out hover:-translate-y-2 hover:scale-110 dark:bg-black-700 dark:shadow-black">
                     <div className="">
                       <h1 className="mb-5 text-2xl font-bold">{todo.title}</h1>
                       <p className="ml-2 mb-1">
