@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 
 import {
   MdArrowBackIosNew,
+  MdCheckCircle,
+  MdCircle,
   MdClose,
   MdColorLens,
   MdEditNote,
@@ -13,14 +15,12 @@ import {
   MdOutlineArrowDropDown,
   MdOutlineCircle,
   MdOutlineDelete,
+  MdOutlineIncompleteCircle,
   MdSearch,
+  MdStar,
   MdStarOutline,
 } from "react-icons/md";
-import {
-  RiDeleteBin6Fill,
-  RiDeleteBin6Line,
-  RiEditBoxLine,
-} from "react-icons/ri";
+import { RiDeleteBin6Line, RiEditBoxLine } from "react-icons/ri";
 import { NavLink, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UpdateTask from "./modals/UpdateTask";
@@ -113,19 +113,29 @@ export default function TasksSection() {
     toast("Task deleted", { type: "info" });
   };
 
-  // // Edit Task
-  // const editTask = async (taskId) => {
-  //   const { data } = await axios
-  //     .put(`/todo/tasks/updateTask/${todoId}/${taskId}`)
-  //     .catch((error) => error.response);
+  // Complete Task
+  const handleIsCompleted = async (isCompleted, taskId) => {
+    const { data } = await axios
+      .put(`/todo/tasks/UpdateTask/${taskId}`, { isCompleted: !isCompleted })
+      .catch((error) => error.response);
 
-  //   if (!data.success) {
-  //     return toast("Failed to delete task", { type: "error" });
-  //   }
+    if (!data.success) {
+      return toast(data.message, { type: "error" });
+    }
+    todoById(todoId);
+  };
 
-  //   todoById(todoId);
-  //   toast("Task deleted", { type: "info" });
-  // };
+  // Important Task
+  const handleIsImportant = async (isImportant, taskId) => {
+    const { data } = await axios
+      .put(`/todo/tasks/UpdateTask/${taskId}`, { isImportant: !isImportant })
+      .catch((error) => error.response);
+
+    if (!data.success) {
+      return toast(data.message, { type: "error" });
+    }
+    todoById(todoId);
+  };
 
   useEffect(() => {
     todoById(todoId);
@@ -244,62 +254,85 @@ export default function TasksSection() {
 
         {/* Tasks */}
         <div className="mt-10">
-          <div className="border-b-2">
-            <MdOutlineArrowDropDown
-              size="1.5rem"
-              className="mr-2 inline-block"
-            />
-            <p className="inline-block">In progress</p>
+          <div className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold dark:border-black-500">
+            <MdOutlineArrowDropDown size="1.5rem" />
+            <p>In Progress</p>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
+              {todo.tasks.filter((e) => !e.isCompleted).length}
+            </div>
           </div>
           <ul className="my-6">
             {todo && todo.tasks.length > 0
-              ? todo.tasks.map((e) => (
-                  <motion.li
-                    variants={taskListVarient}
-                    initial="initial"
-                    animate="animate"
-                    layout
-                    key={e._id}
-                    className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 shadow-md shadow-slate-200  hover:bg-slate-50 dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
-                  >
-                    <div className="flex flex-row items-center gap-2">
-                      <MdOutlineCircle size="1.5rem" />
-                      <p>{e.task}</p>
-                    </div>
-                    <div className="flex flex-row items-center gap-2">
-                      <RiEditBoxLine
-                        onClick={() => {
-                          setUpdateModal({ active: true, taskId: e._id });
-                        }}
-                        title="Edit Task"
-                        className="text-emerald-400"
-                        size="1.5rem"
-                      />
-                      <RiDeleteBin6Line
-                        onClick={() => deleteTask(e._id)}
-                        title="Delete Task"
-                        className="text-red-400"
-                        size="1.5rem"
-                      />
-                      <MdStarOutline
-                        size="1.5rem"
-                        className={`dark:text-white text-${theme}`}
-                      />
-                    </div>
-                  </motion.li>
-                ))
+              ? todo.tasks
+                  .filter((e) => !e.isCompleted)
+                  .sort((a, b) => Number(b.isImportant) - Number(a.isImportant))
+                  .map((e, i) => (
+                    <motion.li
+                      variants={taskListVarient}
+                      initial="initial"
+                      animate="animate"
+                      layout
+                      key={i}
+                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 shadow-md shadow-slate-200  hover:bg-slate-50 dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
+                    >
+                      <div className="flex flex-row items-center gap-2">
+                        <MdOutlineCircle
+                          onClick={() =>
+                            handleIsCompleted(e.isCompleted, e._id)
+                          }
+                          size="1.5rem"
+                        />
+                        <p>{e.task}</p>
+                      </div>
+
+                      <div className="flex flex-row items-center gap-2">
+                        <RiEditBoxLine
+                          onClick={() => {
+                            setUpdateModal({ active: true, taskId: e._id });
+                          }}
+                          title="Edit Task"
+                          className="text-emerald-400"
+                          size="1.5rem"
+                        />
+                        <RiDeleteBin6Line
+                          onClick={() => deleteTask(e._id)}
+                          title="Delete Task"
+                          className="text-red-400"
+                          size="1.5rem"
+                        />
+                        {e.isImportant ? (
+                          <MdStar
+                            onClick={() =>
+                              handleIsImportant(e.isImportant, e._id)
+                            }
+                            size="1.5rem"
+                            className={`dark:text-white text-${theme}`}
+                          />
+                        ) : (
+                          <MdStarOutline
+                            onClick={() =>
+                              handleIsImportant(e.isImportant, e._id)
+                            }
+                            size="1.5rem"
+                            className={`dark:text-white text-${theme}`}
+                          />
+                        )}
+                      </div>
+                    </motion.li>
+                  ))
               : ""}
           </ul>
         </div>
 
         <div className="mt-10">
-          <div className="border-b-2">
-            <MdOutlineArrowDropDown
-              size="1.5rem"
-              className="mr-2 inline-block"
-            />
-            <p className="inline-block">Completed</p>
+          <div className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold  dark:border-black-500">
+            <MdOutlineArrowDropDown size="1.5rem" />
+            <p>Completed</p>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
+              {todo.tasks.filter((e) => e.isCompleted).length}
+            </div>
           </div>
+
           <ul className="my-6">
             {todo && todo.tasks.length > 0
               ? todo.tasks
@@ -311,20 +344,36 @@ export default function TasksSection() {
                       animate="animate"
                       layout
                       key={e._id}
-                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 shadow-md shadow-slate-200  hover:bg-slate-50 dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
+                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 line-through shadow-md shadow-slate-200 hover:bg-slate-50 dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
                     >
                       <div className="flex flex-row items-center gap-2">
-                        <MdOutlineCircle size="1.5rem" />
+                        <MdCheckCircle
+                          onClick={() =>
+                            handleIsCompleted(e.isCompleted, e._id)
+                          }
+                          size="1.5rem"
+                        />
                         <p>{e.task}</p>
                       </div>
                       <div className="flex flex-row items-center gap-2">
                         <RiEditBoxLine
+                          onClick={() => {
+                            setUpdateModal({ active: true, taskId: e._id });
+                          }}
                           className="text-emerald-400"
                           size="1.5rem"
                         />
-                        <RiDeleteBin6Fill
+                        <RiDeleteBin6Line
+                          onClick={() => deleteTask(e._id)}
                           className="text-red-400"
                           size="1.5rem"
+                        />
+                        <MdStarOutline
+                          onClick={() =>
+                            handleIsImportant(e.isImportant, e._id)
+                          }
+                          size="1.5rem"
+                          className={`dark:text-white text-${theme}`}
                         />
                       </div>
                     </motion.li>

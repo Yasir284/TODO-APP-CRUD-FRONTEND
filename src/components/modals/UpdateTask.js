@@ -19,7 +19,7 @@ function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
     }
 
     const { data } = await axios
-      .put(`/todo/tasks/updateTask/${todoId}/${updateModal.taskId}`, {
+      .put(`/todo/tasks/updateTask/${updateModal.taskId}`, {
         task: newTask,
       })
       .catch((error) => error.response);
