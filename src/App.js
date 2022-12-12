@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
@@ -41,6 +41,7 @@ function App() {
       return setIsSignedIn(true);
     }
     setIsSignedIn(false);
+    toast("Sign in/Sign up first", { type: "warning" });
   };
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import AddTodo from "./modals/AddTodo";
 import { toast } from "react-toastify";
@@ -26,6 +26,7 @@ export default function MainSection() {
   const [textTheme, setTextTheme] = useState(null);
   const [todos, setTodos] = useState(null);
   const [showAddTodo, setShowAddTodo] = useState(false);
+  const searchRef = useRef();
 
   // Getting Todos
   const getTodos = async () => {
@@ -39,6 +40,20 @@ export default function MainSection() {
     }
 
     setTodos(res.data.todos);
+  };
+
+  // Search Todo
+  const handleSearch = async () => {
+    let search = searchRef.current.value;
+
+    const { data } = await axios
+      .post("/todo/searchTodos", { search })
+      .catch((error) => error.response);
+
+    console.log(data);
+    if (!data.success) {
+      return toast("Todo not found", { type: "info" });
+    }
   };
 
   useEffect(() => {
@@ -141,9 +156,12 @@ export default function MainSection() {
             </div>
           </div>
 
+          {/* Search todo */}
           <div className="flex flex-row items-center gap-6">
             <form className="flex h-10 flex-row items-center gap-6 rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
               <input
+                ref={searchRef}
+                onKeyUp={handleSearch}
                 className="bg-transparent"
                 type="search"
                 placeholder="Search todo"

@@ -18,7 +18,7 @@ function UserProfile({ isSignedIn, setIsSignedIn }) {
     }
 
     setIsSignedIn(false);
-    return toast(res.data.message, { type: "info" });
+    toast(res.data.message, { type: "info" });
   };
 
   return (

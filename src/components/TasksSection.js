@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 
 import {
+  MdAdd,
   MdArrowBackIosNew,
   MdCheckCircle,
-  MdCircle,
   MdClose,
   MdColorLens,
   MdEditNote,
@@ -15,13 +15,12 @@ import {
   MdOutlineArrowDropDown,
   MdOutlineCircle,
   MdOutlineDelete,
-  MdOutlineIncompleteCircle,
   MdSearch,
   MdStar,
   MdStarOutline,
 } from "react-icons/md";
 import { RiDeleteBin6Line, RiEditBoxLine } from "react-icons/ri";
-import { NavLink, useParams } from "react-router-dom";
+import { useNavigate, NavLink, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UpdateTask from "./modals/UpdateTask";
 
@@ -40,9 +39,12 @@ export default function TasksSection() {
     active: false,
     taskId: null,
   });
+  const [changeTitle, setChangeTitle] = useState(false);
   const [theme, setTheme] = useState("black");
   const { todoId } = useParams();
   const taskRef = useRef();
+  const titleRef = useRef();
+  const navigate = useNavigate();
 
   // Getting todo by id
   const todoById = async (id) => {
@@ -57,6 +59,44 @@ export default function TasksSection() {
 
     setTheme(data.todo[0].todoTheme);
     setTodo(data.todo[0]);
+  };
+
+  // Rename todo
+  const handleRename = async (e) => {
+    e.preventDefault();
+
+    const { data } = await axios
+      .put(`/todo/updateTodo/${todoId}`, { title: titleRef.current.value })
+      .catch((error) => error.response);
+
+    if (!data.success) {
+      return toast("Failed to update title", { type: "error" });
+    }
+
+    todoById(todoId);
+    titleRef.current.value = "";
+    setChangeTitle(false);
+    toast("Title Updated", { type: "success" });
+  };
+
+  // Delete todo
+  const deleteTodo = async () => {
+    let text = "Are you sure you want to delete entire todo?";
+
+    if (!window.confirm(text)) {
+      return;
+    }
+
+    const { data } = await axios
+      .delete(`/todo/deleteTodo/${todoId}`)
+      .catch((error) => error.response);
+
+    if (!data.success) {
+      return toast("Failed to delete todo", { type: "error" });
+    }
+
+    navigate("/");
+    toast("Todo deleted", { type: "info" });
   };
 
   // Add Task
@@ -172,9 +212,24 @@ export default function TasksSection() {
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 pb-2">
           <div className="flex flex-row items-center gap-6">
-            <h1 className="text-3xl font-extrabold">
-              {todo ? todo.title : "Title"}
-            </h1>
+            {changeTitle ? (
+              <form
+                onSubmit={handleRename}
+                className="flex h-10 flex-row items-center rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
+              >
+                <MdAdd size="1.5rem" type="submit" />
+                <input
+                  ref={titleRef}
+                  placeholder="Add new title"
+                  className="bg-transparent p-2"
+                />
+                <MdClose onClick={() => setChangeTitle(false)} size="1.5rem" />
+              </form>
+            ) : (
+              <h1 className="text-3xl font-extrabold">
+                {todo ? todo.title : "Title"}
+              </h1>
+            )}
             <div className="relative">
               <button
                 className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white dark:hover:bg-black-700"
@@ -192,7 +247,13 @@ export default function TasksSection() {
                   active ? "flex" : "hidden"
                 }`}
               >
-                <li className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-slate-50 dark:text-white dark:hover:bg-black-500">
+                <li
+                  onClick={() => {
+                    setChangeTitle(true);
+                    setActive(false);
+                  }}
+                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-slate-50 dark:text-white dark:hover:bg-black-500"
+                >
                   <MdEditNote size="1.2rem" />
                   <span>Rename List</span>
                 </li>
@@ -215,7 +276,10 @@ export default function TasksSection() {
                   </div>
                 </li>
 
-                <li className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-red-600 transition-all duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-black-500">
+                <li
+                  onClick={deleteTodo}
+                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-red-600 transition-all duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-black-500"
+                >
                   <MdOutlineDelete size="1.2rem" />
                   <span>Delete List</span>
                 </li>
@@ -258,7 +322,7 @@ export default function TasksSection() {
             <MdOutlineArrowDropDown size="1.5rem" />
             <p>In Progress</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
-              {todo.tasks.filter((e) => !e.isCompleted).length}
+              {todo ? todo.tasks.filter((e) => !e.isCompleted).length : 0}
             </div>
           </div>
           <ul className="my-6">
@@ -329,7 +393,7 @@ export default function TasksSection() {
             <MdOutlineArrowDropDown size="1.5rem" />
             <p>Completed</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
-              {todo.tasks.filter((e) => e.isCompleted).length}
+              {todo ? todo.tasks.filter((e) => e.isCompleted).length : 0}
             </div>
           </div>
 
