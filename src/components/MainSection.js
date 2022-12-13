@@ -62,7 +62,7 @@ export default function MainSection() {
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 border-violet-600 pb-2 text-violet-600 dark:border-white dark:text-white">
           <div className="flex flex-row items-center gap-6">
-            <h1 className="text-3xl font-extrabold">Your Todos</h1>
+            <h1 className="text-3xl font-extrabold">My Todos</h1>
           </div>
 
           {/* Search todo */}

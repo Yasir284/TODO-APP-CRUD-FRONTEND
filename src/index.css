@@ -49,11 +49,9 @@ code {
 }
 
 .toggle-checkbox:checked {
-  @apply: right-0 border-black-500;
   right: 0;
-  border-color: #3b3a39;
+  border-color: #d5d2d2;
 }
 .toggle-checkbox:checked + .toggle-label {
-  @apply: bg-black-500;
-  background-color: #3b3a39;
+  background-color: #ffffff;
 }

@@ -1,12 +1,16 @@
 // import axios from "axios";
 import axios from "axios";
 import React from "react";
+import { useContext } from "react";
 import { MdLogout } from "react-icons/md";
 import { toast } from "react-toastify";
+import { UserContext } from "../context/UserContext";
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
 
-function UserProfile({ isSignedIn, setIsSignedIn }) {
+function UserProfile() {
+  const { setIsSignedIn, userInfo } = useContext(UserContext);
+
   // Log out function
   const handleLogOut = async () => {
     const res = await axios
@@ -24,7 +28,7 @@ function UserProfile({ isSignedIn, setIsSignedIn }) {
   return (
     <div className="flex flex-row items-center justify-center gap-4 text-violet-600 dark:text-white">
       <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-violet-600 bg-white text-center text-xl font-bold dark:bg-violet-600">
-        Y
+        {userInfo.name[0].toUpperCase()}
       </div>
 
       <div

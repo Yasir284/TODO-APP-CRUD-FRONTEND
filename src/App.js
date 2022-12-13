@@ -19,8 +19,9 @@ axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
 
 function App() {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
   const [isSignedIn, setIsSignedIn] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
     if (theme === "dark") {
@@ -32,17 +33,21 @@ function App() {
 
   // Check if user is signed in
   const checkIsSignedIn = async () => {
-    const res = await axios
+    const { data } = await axios
       .get("/todo/u/isSignedIn")
       .catch((error) => error.response);
-    console.log("signIn response:", res);
+    console.log("signIn response:", data);
 
-    if (res.data.success) {
-      return setIsSignedIn(true);
+    if (!data.success) {
+      setIsSignedIn(false);
+      toast("Sign in/Sign up first", { type: "warning" });
     }
-    setIsSignedIn(false);
-    toast("Sign in/Sign up first", { type: "warning" });
+
+    setUserInfo(data.user);
+    setIsSignedIn(true);
   };
+
+  // Get user info
 
   useEffect(() => {
     checkIsSignedIn();
@@ -50,7 +55,7 @@ function App() {
 
   return (
     <>
-      <UserContext.Provider value={{ isSignedIn, setIsSignedIn }}>
+      <UserContext.Provider value={{ isSignedIn, setIsSignedIn, userInfo }}>
         <ThemeContext.Provider value={{ theme, setTheme }}>
           <ToastContainer
             position="top-right"

@@ -40,10 +40,11 @@ export default function TasksSection() {
     taskId: null,
   });
   const [changeTitle, setChangeTitle] = useState(false);
-  const [theme, setTheme] = useState("black");
+  const [theme, setTheme] = useState(null);
   const { todoId } = useParams();
   const taskRef = useRef();
   const titleRef = useRef();
+  const searchRef = useRef();
   const navigate = useNavigate();
 
   // Getting todo by id
@@ -177,9 +178,29 @@ export default function TasksSection() {
     todoById(todoId);
   };
 
+  // Search Todo
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    let search = searchRef.current.value;
+
+    if (!search) {
+      return todoById(todoId);
+    }
+
+    const { data } = await axios
+      .post(`/todo/tasks/searchTasks/${todoId}`, { search })
+      .catch((error) => error.response);
+
+    if (!data.success || data?.todo?.tasks?.length === 0) {
+      return toast("Task not found", { type: "info" });
+    }
+
+    setTodo(data.todo);
+  };
+
   useEffect(() => {
     todoById(todoId);
-  }, [todoId, setTodo]);
+  }, [todoId]);
 
   const selectTheme = [
     {
@@ -199,15 +220,17 @@ export default function TasksSection() {
     },
     {
       style:
-        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-blue-600",
-      changeTheme: () => updateTheme("blue"),
+        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-yellow-600",
+      changeTheme: () => updateTheme("yellow"),
     },
   ];
 
   return (
     <div className="relative flex flex-row justify-center">
       <div
-        className={`w-[80%] basis-3/4 bg-violet-50 p-12 dark:bg-black-900 text-${theme}-600`}
+        className={`w-[80%] basis-3/4 bg-violet-50 p-12 dark:bg-black-900 ${
+          theme ? `text-${theme}-600` : ""
+        }`}
       >
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 pb-2">
@@ -230,6 +253,7 @@ export default function TasksSection() {
                 {todo ? todo.title : "Title"}
               </h1>
             )}
+
             <div className="relative">
               <button
                 className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-white dark:hover:bg-black-700"
@@ -269,7 +293,7 @@ export default function TasksSection() {
                         <div
                           key={index}
                           className={style}
-                          onClick={changeTheme}
+                          onClick={() => changeTheme()}
                         ></div>
                       );
                     })}
@@ -288,8 +312,13 @@ export default function TasksSection() {
           </div>
 
           <div className="flex flex-row items-center gap-6">
-            <form className="flex h-10 flex-row items-center gap-6 rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
+            <form
+              onSubmit={handleSearch}
+              className="flex h-10 flex-row items-center gap-6 rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
+            >
               <input
+                onChange={handleSearch}
+                ref={searchRef}
                 className="bg-transparent"
                 type="search"
                 placeholder="Search task"
@@ -316,7 +345,7 @@ export default function TasksSection() {
           </button>
         </form>
 
-        {/* Tasks */}
+        {/* Tasks In Progress */}
         <div className="mt-10">
           <div className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold dark:border-black-500">
             <MdOutlineArrowDropDown size="1.5rem" />
@@ -388,6 +417,7 @@ export default function TasksSection() {
           </ul>
         </div>
 
+        {/* Tasks Completed */}
         <div className="mt-10">
           <div className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold  dark:border-black-500">
             <MdOutlineArrowDropDown size="1.5rem" />
