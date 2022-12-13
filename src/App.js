@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { AnimatePresence } from "framer-motion";
 
 // Contexts
 import { ThemeContext } from "./context/ThemeContext";
@@ -22,6 +23,7 @@ function App() {
   const [theme, setTheme] = useState("dark");
   const [isSignedIn, setIsSignedIn] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     if (theme === "dark") {
@@ -40,7 +42,7 @@ function App() {
 
     if (!data.success) {
       setIsSignedIn(false);
-      toast("Sign in/Sign up first", { type: "warning" });
+      return toast("Sign in/Sign up first", { type: "warning" });
     }
 
     setUserInfo(data.user);
@@ -63,13 +65,15 @@ function App() {
             theme={theme === "dark" ? "dark" : "light"}
           />
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Navigate replace to="/todo" />} />
-            <Route path="/todo" element={<MainSection />} />
-            <Route path="/signUp" element={<SignUp />} />
-            <Route path="/signIn" element={<SignIn />} />
-            <Route path="/todo/tasks/:todoId" element={<TasksSection />} />
-          </Routes>
+          <AnimatePresence exitBeforeEnter>
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Navigate replace to="/todo" />} />
+              <Route path="/todo" element={<MainSection />} />
+              <Route path="/signUp" element={<SignUp />} />
+              <Route path="/signIn" element={<SignIn />} />
+              <Route path="/todo/tasks/:todoId" element={<TasksSection />} />
+            </Routes>
+          </AnimatePresence>
         </ThemeContext.Provider>
       </UserContext.Provider>
     </>

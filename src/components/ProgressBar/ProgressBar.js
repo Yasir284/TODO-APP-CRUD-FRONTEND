@@ -7,7 +7,7 @@ function ProgressBar({ percentage }) {
       <div className="dark:black-900 flex h-full w-full flex-col items-center justify-center rounded-full bg-violet-100 font-bold text-violet-600 shadow-inner shadow-slate-300 dark:bg-black-700 dark:shadow-black-500">
         {percentage <= 100 ? (
           <>
-            <p className="font text-2xl">{percentage}%</p>
+            <p className="font text-2xl">{Math.round(percentage)}%</p>
             <p className="text-sm">Done</p>
           </>
         ) : (

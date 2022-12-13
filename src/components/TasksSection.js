@@ -32,6 +32,15 @@ const taskListVarient = {
   animate: { opacity: 1, transition: { ease: "easeInOut", duration: 1 } },
 };
 
+const containerVarient = {
+  initial: { x: ["100vw"] },
+  animate: {
+    x: 0,
+    transition: { delay: 0.2, stiffness: 120, type: "spring" },
+  },
+  exit: { x: ["-100vw"] },
+};
+
 export default function TasksSection() {
   const [active, setActive] = useState(false);
   const [todo, setTodo] = useState(null);
@@ -205,33 +214,40 @@ export default function TasksSection() {
   const selectTheme = [
     {
       style:
-        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-violet-600",
+        "shadow-lg shadow-slate-400 dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-violet-600",
       changeTheme: () => updateTheme("violet"),
     },
     {
       style:
-        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-red-600",
+        "shadow-lg shadow-slate-400 dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-red-600",
       changeTheme: () => updateTheme("red"),
     },
     {
       style:
-        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-green-600",
+        "shadow-lg shadow-slate-400 dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-green-600",
       changeTheme: () => updateTheme("green"),
     },
     {
       style:
-        "shadow-lg dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-yellow-600",
-      changeTheme: () => updateTheme("yellow"),
+        "shadow-lg shadow-slate-400 dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-split-white-black",
+      changeTheme: () => updateTheme("black-white"),
     },
   ];
 
   return (
-    <div className="relative flex flex-row justify-center">
-      <div
-        className={`w-[80%] basis-3/4 bg-violet-50 p-12 dark:bg-black-900 ${
-          theme ? `text-${theme}-600` : ""
-        }`}
-      >
+    <motion.div
+      variants={containerVarient}
+      initial="initial"
+      animate="animate"
+      className={`relative flex flex-row justify-center ${
+        theme
+          ? theme === "black-white"
+            ? "text-black dark:text-white"
+            : `text-${theme}-600`
+          : "text-violet-600 dark:text-white"
+      }`}
+    >
+      <div className="w-[80%] basis-3/4 bg-violet-50 p-12 dark:bg-black-900">
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 pb-2">
           <div className="flex flex-row items-center gap-6">
@@ -276,13 +292,13 @@ export default function TasksSection() {
                     setChangeTitle(true);
                     setActive(false);
                   }}
-                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-slate-50 dark:text-white dark:hover:bg-black-500"
+                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-[#F9F9F9]  dark:text-white dark:hover:bg-black-500"
                 >
                   <MdEditNote size="1.2rem" />
                   <span>Rename List</span>
                 </li>
 
-                <li className="group flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-slate-50 dark:text-white dark:hover:bg-black-500">
+                <li className="group flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-[#F9F9F9] dark:text-white dark:hover:bg-black-500">
                   <MdColorLens size="1.2rem" />
                   <span>Change Theme</span>
                   <MdKeyboardArrowRight size="1.2rem" />
@@ -293,7 +309,7 @@ export default function TasksSection() {
                         <div
                           key={index}
                           className={style}
-                          onClick={() => changeTheme()}
+                          onClick={changeTheme}
                         ></div>
                       );
                     })}
@@ -302,7 +318,7 @@ export default function TasksSection() {
 
                 <li
                   onClick={deleteTodo}
-                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-red-600 transition-all duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-black-500"
+                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-red-600 transition-all duration-200 ease-in-out hover:bg-[#F9F9F9] dark:hover:bg-black-500"
                 >
                   <MdOutlineDelete size="1.2rem" />
                   <span>Delete List</span>
@@ -362,11 +378,9 @@ export default function TasksSection() {
                   .map((e, i) => (
                     <motion.li
                       variants={taskListVarient}
-                      initial="initial"
-                      animate="animate"
                       layout
                       key={i}
-                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 shadow-md shadow-slate-200  hover:bg-slate-50 dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
+                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 shadow-md shadow-slate-200 hover:bg-[#F9F9F9] dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
                     >
                       <div className="flex flex-row items-center gap-2">
                         <MdOutlineCircle
@@ -434,11 +448,9 @@ export default function TasksSection() {
                   .map((e) => (
                     <motion.li
                       variants={taskListVarient}
-                      initial="initial"
-                      animate="animate"
                       layout
                       key={e._id}
-                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 line-through shadow-md shadow-slate-200 hover:bg-slate-50 dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
+                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 line-through shadow-md shadow-slate-200 hover:bg-[#F9F9F9] dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
                     >
                       <div className="flex flex-row items-center gap-2">
                         <MdCheckCircle
@@ -492,6 +504,6 @@ export default function TasksSection() {
       >
         <MdArrowBackIosNew size="1.5rem" />
       </NavLink>
-    </div>
+    </motion.div>
   );
 }

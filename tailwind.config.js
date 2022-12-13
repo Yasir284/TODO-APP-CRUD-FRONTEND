@@ -10,6 +10,10 @@ module.exports = {
         "black-700": "#252423",
         "black-500": "#3b3a39",
       },
+      backgroundImage: {
+        "split-white-black":
+          "linear-gradient(to right, #000000 55% , white 45%);",
+      },
     },
   },
   plugins: [],

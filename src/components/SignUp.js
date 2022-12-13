@@ -5,8 +5,22 @@ import { useRef } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
+
+const containerVarient = {
+  initial: { x: ["100vw"] },
+  animate: {
+    x: 0,
+    transition: { delay: 0.2, stiffness: 120, type: "spring" },
+  },
+  exit: {
+    x: ["-100vw"],
+    transition: { delay: 0.2, stiffness: 120, type: "spring" },
+  },
+};
 
 function SignUp() {
   const navigate = useNavigate();
@@ -52,7 +66,13 @@ function SignUp() {
   };
 
   return (
-    <div className="flex w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900">
+    <motion.div
+      variants={containerVarient}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className="flex w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900"
+    >
       <div className="mt-12 flex w-1/3 flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
         <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
           Sign Up
@@ -117,7 +137,7 @@ function SignUp() {
           </button>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

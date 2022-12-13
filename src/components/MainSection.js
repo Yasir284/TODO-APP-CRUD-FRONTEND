@@ -57,7 +57,13 @@ export default function MainSection() {
   }, [setTodos]);
 
   return (
-    <div className="flex w-full justify-center">
+    <motion.div
+      initial={{ x: ["-100vw"] }}
+      animate={{ x: 0 }}
+      exit={{ x: ["-100vw"] }}
+      transition={{ type: "spring", stiffness: 120 }}
+      className="flex w-full justify-center"
+    >
       <div className="w-full bg-violet-50 px-32 py-12 dark:bg-black-900">
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 border-violet-600 pb-2 text-violet-600 dark:border-white dark:text-white">
@@ -149,6 +155,6 @@ export default function MainSection() {
           />
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
