@@ -2,9 +2,24 @@ import React, { useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { MdClose } from "react-icons/md";
+import { AnimatePresence, motion } from "framer-motion";
 
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
+
+const containerVarient = {
+  initial: { opacity: 0, scale: 0 },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    transition: { delay: 0.2, type: "string", stiffness: 120 },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0,
+    transition: { type: "string", stiffness: 120 },
+  },
+};
 
 function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
   console.log(updateModal);
@@ -34,10 +49,17 @@ function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
   };
 
   return (
-    <>
+    <AnimatePresence>
       {updateModal.active && (
         <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white bg-opacity-10 text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
-          <div className="relative flex w-1/3 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
+          <motion.div
+            key={updateModal.active}
+            variants={containerVarient}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="relative flex w-1/3 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black"
+          >
             <MdClose
               size="1.5rem"
               className="absolute top-6 right-10"
@@ -64,10 +86,10 @@ function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
-    </>
+    </AnimatePresence>
   );
 }
 

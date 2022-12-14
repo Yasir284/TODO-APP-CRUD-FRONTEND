@@ -65,7 +65,7 @@ function App() {
             theme={theme === "dark" ? "dark" : "light"}
           />
           <Navbar />
-          <AnimatePresence exitBeforeEnter>
+          <AnimatePresence>
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Navigate replace to="/todo" />} />
               <Route path="/todo" element={<MainSection />} />

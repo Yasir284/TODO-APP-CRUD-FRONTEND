@@ -33,12 +33,9 @@ const taskListVarient = {
 };
 
 const containerVarient = {
-  initial: { x: ["100vw"] },
-  animate: {
-    x: 0,
-    transition: { delay: 0.2, stiffness: 120, type: "spring" },
-  },
-  exit: { x: ["-100vw"] },
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { delay: 0.5 } },
+  exit: { opacity: 0 },
 };
 
 export default function TasksSection() {

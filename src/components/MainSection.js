@@ -5,31 +5,39 @@ import { toast } from "react-toastify";
 
 import { MdAdd, MdCalendarToday, MdSearch } from "react-icons/md";
 
-import emptySvg from "../images/emptySvg.svg";
 import ProgressBar from "./ProgressBar/ProgressBar";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
 
+const containerVarient = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { delay: 0.5 } },
+  exit: { opacity: 0 },
+};
+
 export default function MainSection() {
+  const { isSignedIn } = useContext(UserContext);
   const [todos, setTodos] = useState(null);
   const [showAddTodo, setShowAddTodo] = useState(false);
   const searchRef = useRef();
 
   // Getting Todos
   const getTodos = async () => {
-    const res = await axios
+    const { data } = await axios
       .get("/todo/getTodos")
       .catch((error) => error.response);
-    console.log("todos response:", res);
+    console.log("todos response:", data);
 
-    if (!res.data.success) {
-      return toast(res.data.message, { type: "error" });
+    if (!data.success) {
+      return toast(data.message, { type: "error" });
     }
 
-    setTodos(res.data.todos);
+    setTodos(data.todos);
   };
 
   // Search Todo
@@ -58,10 +66,10 @@ export default function MainSection() {
 
   return (
     <motion.div
-      initial={{ x: ["-100vw"] }}
-      animate={{ x: 0 }}
-      exit={{ x: ["-100vw"] }}
-      transition={{ type: "spring", stiffness: 120 }}
+      variants={containerVarient}
+      initial="initial"
+      animate="animate"
+      exit="exit"
       className="flex w-full justify-center"
     >
       <div className="w-full bg-violet-50 px-32 py-12 dark:bg-black-900">
@@ -105,7 +113,7 @@ export default function MainSection() {
         />
 
         {/* Todo List */}
-        {todos && todos.length > 0 ? (
+        {isSignedIn && todos && todos.length > 0 ? (
           <ul className="flex flex-row flex-wrap justify-center gap-12">
             {todos.map((todo, i) => (
               <NavLink key={i} to={`/todo/tasks/${todo._id}`}>
@@ -115,7 +123,7 @@ export default function MainSection() {
                   className="flex flex-row text-violet-700 dark:text-white"
                 >
                   <div className="flex flex-row justify-between rounded-3xl bg-violet-100 p-10 shadow-xl shadow-slate-300 transition-all duration-200 ease-in-out hover:-translate-y-2 hover:scale-110 dark:bg-black-700 dark:shadow-black">
-                    <div className="">
+                    <div>
                       <h1 className="mb-5 text-2xl font-bold">{todo.title}</h1>
                       <p className="ml-2 mb-1">
                         🚀 <span>{todo.tasks.length}</span> Tasks
@@ -148,11 +156,51 @@ export default function MainSection() {
             ))}
           </ul>
         ) : (
-          <img
-            src={emptySvg}
-            alt="empty svg"
-            className="mx-auto w-[55%] animate-pulse"
-          />
+          <ul className="flex w-full flex-row flex-wrap justify-center gap-12">
+            <li className="flex basis-[45%] flex-row">
+              <div className="flex w-full flex-row justify-between rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
+                <div className="flex animate-pulse flex-col gap-2 ">
+                  <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                  <div className="mt-3 flex flex-row items-center gap-2">
+                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                  </div>
+                  <div className="flex flex-row items-center gap-2">
+                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                  </div>
+                  <div className="mt-4 flex flex-row items-center gap-2">
+                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className="h-3 w-48 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                  </div>
+                </div>
+
+                <div className="h-[151px] w-[151px] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+              </div>
+            </li>
+
+            <li className="flex basis-[45%] flex-row">
+              <div className="flex w-full flex-row justify-between rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
+                <div className="flex animate-pulse flex-col gap-2 ">
+                  <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                  <div className="mt-3 flex flex-row items-center gap-2">
+                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                  </div>
+                  <div className="flex flex-row items-center gap-2">
+                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                  </div>
+                  <div className="mt-4 flex flex-row items-center gap-2">
+                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className="h-3 w-48 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                  </div>
+                </div>
+
+                <div className="h-[151px] w-[151px] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+              </div>
+            </li>
+          </ul>
         )}
       </div>
     </motion.div>

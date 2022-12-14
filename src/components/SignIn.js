@@ -11,15 +11,9 @@ axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
 
 const containerVarient = {
-  initial: { x: ["100vw"] },
-  animate: {
-    x: 0,
-    transition: { delay: 0.2, stiffness: 120, type: "spring" },
-  },
-  exit: {
-    x: ["100vw"],
-    transition: { delay: 0.2, stiffness: 120, type: "spring" },
-  },
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { delay: 0.5 } },
+  exit: { opacity: 0 },
 };
 
 function SignIn() {
@@ -72,6 +66,7 @@ function SignIn() {
         <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
           Sign In
         </h1>
+
         <form
           onSubmit={handleSubmit}
           className="flex w-full flex-col items-start"
@@ -127,10 +122,11 @@ function SignIn() {
             </button>
           </div>
         </form>
+
         <div className="mt-3 text-center text-xs">
           <span className="mr-3">Don't have an account?</span>
           <NavLink to="/signUp" className="border-b-2">
-            signUp
+            sign up
           </NavLink>
         </div>
       </div>

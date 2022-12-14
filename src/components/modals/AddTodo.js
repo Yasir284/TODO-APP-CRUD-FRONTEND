@@ -3,8 +3,24 @@ import React from "react";
 import { useRef, useState } from "react";
 import { MdAdd, MdClose } from "react-icons/md";
 import { toast } from "react-toastify";
+import { AnimatePresence, motion } from "framer-motion";
+
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
+
+const containerVarient = {
+  initial: { opacity: 0, scale: 0 },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    transition: { delay: 0.2, type: "string", stiffness: 120 },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0,
+    transition: { type: "string", stiffness: 120 },
+  },
+};
 
 function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   const titleRef = useRef();
@@ -61,10 +77,17 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   };
 
   return (
-    <>
+    <AnimatePresence>
       {showAddTodo && (
-        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white bg-opacity-10 text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
-          <div className="relative flex w-1/3 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
+        <div className="bg-opacity- fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
+          <motion.div
+            key={showAddTodo}
+            variants={containerVarient}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="relative flex w-1/3 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black"
+          >
             <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
               Create Todo
             </h1>
@@ -133,10 +156,10 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
             >
               Create Todo
             </button>
-          </div>
+          </motion.div>
         </div>
       )}
-    </>
+    </AnimatePresence>
   );
 }
 
