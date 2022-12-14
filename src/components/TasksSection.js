@@ -6,13 +6,17 @@ import { motion } from "framer-motion";
 import {
   MdAdd,
   MdArrowBackIosNew,
+  MdCalendarToday,
   MdCheckCircle,
   MdClose,
   MdColorLens,
+  MdCreate,
+  MdCreateNewFolder,
+  MdEdit,
   MdEditNote,
   MdKeyboardArrowRight,
   MdMoreHoriz,
-  MdOutlineArrowDropDown,
+  MdOutlineArrowForward,
   MdOutlineCircle,
   MdOutlineDelete,
   MdSearch,
@@ -32,14 +36,28 @@ const taskListVarient = {
   animate: { opacity: 1, transition: { ease: "easeInOut", duration: 1 } },
 };
 
+const taskVarient = {
+  initial: { opacity: 0, display: "none" },
+  animate: {
+    opacity: 1,
+    display: "block",
+    transition: {
+      duration: 0.2,
+      ease: "easeInOut",
+    },
+  },
+};
+
 const containerVarient = {
   initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { delay: 0.5 } },
+  animate: { opacity: 1, transition: { delay: 0.3 } },
   exit: { opacity: 0 },
 };
 
 export default function TasksSection() {
   const [active, setActive] = useState(false);
+  const [showInProgress, setShowInProgress] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(false);
   const [todo, setTodo] = useState(null);
   const [updateModal, setUpdateModal] = useState({
     active: false,
@@ -236,6 +254,7 @@ export default function TasksSection() {
       variants={containerVarient}
       initial="initial"
       animate="animate"
+      exit="exit"
       className={`relative flex flex-row justify-center ${
         theme
           ? theme === "black-white"
@@ -359,60 +378,168 @@ export default function TasksSection() {
         </form>
 
         {/* Tasks In Progress */}
-        <div className="mt-10">
-          <div className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold dark:border-black-500">
-            <MdOutlineArrowDropDown size="1.5rem" />
+        <div className="mt-10 cursor-pointer">
+          <div
+            onClick={() => setShowInProgress(!showInProgress)}
+            className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold dark:border-black-500"
+          >
+            {showInProgress ? (
+              <MdClose size="1.5rem" />
+            ) : (
+              <MdOutlineArrowForward size="1.5rem" />
+            )}
             <p>In Progress</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
               {todo ? todo.tasks.filter((e) => !e.isCompleted).length : 0}
             </div>
           </div>
-          <ul className="my-6">
-            {todo && todo.tasks.length > 0
-              ? todo.tasks
-                  .filter((e) => !e.isCompleted)
-                  .sort((a, b) => Number(b.isImportant) - Number(a.isImportant))
-                  .map((e, i) => (
-                    <motion.li
-                      variants={taskListVarient}
-                      layout
-                      key={i}
-                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 shadow-md shadow-slate-200 hover:bg-[#F9F9F9] dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
-                    >
-                      <div className="flex flex-row items-center gap-2">
-                        <MdOutlineCircle
-                          onClick={() =>
-                            handleIsCompleted(e.isCompleted, e._id)
-                          }
-                          size="1.5rem"
-                        />
-                        <p>{e.task}</p>
-                      </div>
 
-                      <div className="flex flex-row items-center gap-2">
-                        <RiEditBoxLine
-                          onClick={() => {
-                            setUpdateModal({ active: true, taskId: e._id });
-                          }}
-                          title="Edit Task"
-                          className="text-emerald-400"
-                          size="1.5rem"
-                        />
-                        <RiDeleteBin6Line
-                          onClick={() => deleteTask(e._id)}
-                          title="Delete Task"
-                          className="text-red-400"
-                          size="1.5rem"
-                        />
-                        {e.isImportant ? (
-                          <MdStar
+          {showInProgress ? (
+            <motion.ul
+              variants={taskVarient}
+              key={showInProgress}
+              className="my-6"
+            >
+              {todo && todo.tasks.length > 0
+                ? todo.tasks
+                    .filter((e) => !e.isCompleted)
+                    .sort(
+                      (a, b) => Number(b.isImportant) - Number(a.isImportant)
+                    )
+                    .map((e, i) => (
+                      <motion.li
+                        variants={taskListVarient}
+                        layout
+                        key={i}
+                        className="group mb-3 flex flex-col rounded-md bg-white shadow-md shadow-slate-200 hover:bg-[#F9F9F9] dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
+                      >
+                        <div className="flex flex-row justify-between py-3 px-4 group-hover:border-b-2 group-hover:border-slate-200 dark:group-hover:border-black-800">
+                          <div className="flex flex-row items-center gap-2">
+                            <MdOutlineCircle
+                              onClick={() =>
+                                handleIsCompleted(e.isCompleted, e._id)
+                              }
+                              size="1.5rem"
+                            />
+                            <p>{e.task}</p>
+                          </div>
+
+                          <div className="flex flex-row items-center gap-2">
+                            <RiEditBoxLine
+                              onClick={() => {
+                                setUpdateModal({ active: true, taskId: e._id });
+                              }}
+                              title="Edit Task"
+                              className="text-emerald-400"
+                              size="1.5rem"
+                            />
+                            <RiDeleteBin6Line
+                              onClick={() => deleteTask(e._id)}
+                              title="Delete Task"
+                              className="text-red-400"
+                              size="1.5rem"
+                            />
+                            {e.isImportant ? (
+                              <MdStar
+                                onClick={() =>
+                                  handleIsImportant(e.isImportant, e._id)
+                                }
+                                size="1.5rem"
+                                className={`dark:text-white text-${theme}`}
+                              />
+                            ) : (
+                              <MdStarOutline
+                                onClick={() =>
+                                  handleIsImportant(e.isImportant, e._id)
+                                }
+                                size="1.5rem"
+                                className={`dark:text-white text-${theme}`}
+                              />
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="hidden -translate-y-10 flex-row gap-10 py-3 px-4 transition-all duration-200 ease-in-out group-hover:flex group-hover:translate-y-0">
+                          <div className="flex flex-row gap-2">
+                            <MdCreateNewFolder size="1.5rem" />
+                            <span>
+                              Created at :{" "}
+                              {new Date(e.taskCreatedAt).toLocaleString()}
+                            </span>
+                          </div>
+
+                          <div className="flex flex-row gap-2">
+                            <MdEditNote size="1.5rem" />
+                            <span>
+                              Updated at :{" "}
+                              {new Date(e.taskUpdatedAt).toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </motion.li>
+                    ))
+                : ""}
+            </motion.ul>
+          ) : (
+            ""
+          )}
+        </div>
+
+        {/* Tasks Completed */}
+        <div className="mt-10 cursor-pointer">
+          <div
+            onClick={() => setShowCompleted(!showCompleted)}
+            className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold  dark:border-black-500"
+          >
+            {showCompleted ? (
+              <MdClose size="1.5rem" />
+            ) : (
+              <MdOutlineArrowForward size="1.5rem" />
+            )}
+            <p>Completed</p>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
+              {todo ? todo.tasks.filter((e) => e.isCompleted).length : 0}
+            </div>
+          </div>
+
+          {showCompleted ? (
+            <motion.ul
+              key={showCompleted}
+              variants={taskVarient}
+              className="my-6"
+            >
+              {todo && todo.tasks.length > 0
+                ? todo.tasks
+                    .filter((e) => e.isCompleted)
+                    .map((e) => (
+                      <motion.li
+                        variants={taskListVarient}
+                        layout
+                        key={e._id}
+                        className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 line-through shadow-md shadow-slate-200 hover:bg-[#F9F9F9] dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
+                      >
+                        <div className="flex flex-row items-center gap-2">
+                          <MdCheckCircle
                             onClick={() =>
-                              handleIsImportant(e.isImportant, e._id)
+                              handleIsCompleted(e.isCompleted, e._id)
                             }
                             size="1.5rem"
-                            className={`dark:text-white text-${theme}`}
                           />
-                        ) : (
+                          <p>{e.task}</p>
+                        </div>
+                        <div className="flex flex-row items-center gap-2">
+                          <RiEditBoxLine
+                            onClick={() => {
+                              setUpdateModal({ active: true, taskId: e._id });
+                            }}
+                            className="text-emerald-400"
+                            size="1.5rem"
+                          />
+                          <RiDeleteBin6Line
+                            onClick={() => deleteTask(e._id)}
+                            className="text-red-400"
+                            size="1.5rem"
+                          />
                           <MdStarOutline
                             onClick={() =>
                               handleIsImportant(e.isImportant, e._id)
@@ -420,69 +547,14 @@ export default function TasksSection() {
                             size="1.5rem"
                             className={`dark:text-white text-${theme}`}
                           />
-                        )}
-                      </div>
-                    </motion.li>
-                  ))
-              : ""}
-          </ul>
-        </div>
-
-        {/* Tasks Completed */}
-        <div className="mt-10">
-          <div className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold  dark:border-black-500">
-            <MdOutlineArrowDropDown size="1.5rem" />
-            <p>Completed</p>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
-              {todo ? todo.tasks.filter((e) => e.isCompleted).length : 0}
-            </div>
-          </div>
-
-          <ul className="my-6">
-            {todo && todo.tasks.length > 0
-              ? todo.tasks
-                  .filter((e) => e.isCompleted)
-                  .map((e) => (
-                    <motion.li
-                      variants={taskListVarient}
-                      layout
-                      key={e._id}
-                      className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 line-through shadow-md shadow-slate-200 hover:bg-[#F9F9F9] dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
-                    >
-                      <div className="flex flex-row items-center gap-2">
-                        <MdCheckCircle
-                          onClick={() =>
-                            handleIsCompleted(e.isCompleted, e._id)
-                          }
-                          size="1.5rem"
-                        />
-                        <p>{e.task}</p>
-                      </div>
-                      <div className="flex flex-row items-center gap-2">
-                        <RiEditBoxLine
-                          onClick={() => {
-                            setUpdateModal({ active: true, taskId: e._id });
-                          }}
-                          className="text-emerald-400"
-                          size="1.5rem"
-                        />
-                        <RiDeleteBin6Line
-                          onClick={() => deleteTask(e._id)}
-                          className="text-red-400"
-                          size="1.5rem"
-                        />
-                        <MdStarOutline
-                          onClick={() =>
-                            handleIsImportant(e.isImportant, e._id)
-                          }
-                          size="1.5rem"
-                          className={`dark:text-white text-${theme}`}
-                        />
-                      </div>
-                    </motion.li>
-                  ))
-              : ""}
-          </ul>
+                        </div>
+                      </motion.li>
+                    ))
+                : ""}
+            </motion.ul>
+          ) : (
+            ""
+          )}
         </div>
       </div>
 

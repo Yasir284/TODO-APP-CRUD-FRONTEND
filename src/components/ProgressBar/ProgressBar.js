@@ -1,35 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ProgressBar.css";
 import { motion } from "framer-motion";
 import { MdCheck } from "react-icons/md";
 
 function ProgressBar({ percentage }) {
   console.log(percentage);
-  // const [count, setCount] = useState(0);
-  // let percentage =
-  //   (todo.tasks.filter((e) => e.isCompleted) * 100) / todo.tasks.length;
+  const [count, setCount] = useState(0);
 
-  // function loadPercent(percentage) {
-  //   let startCount = 0;
-  //   let interval = setInterval(() => {
-  //     if (startCount === Math.round(percentage)) {
-  //       return clearInterval(interval);
-  //     }
-  //     startCount += 1;
-  //     setCount(startCount);
-  //   }, 20);
-  // }
-
-  // useEffect(() => {
-  //   loadPercent(percentage);
-  // }, [percentage]);
+  useEffect(() => {
+    let startCount = 0;
+    setCount(startCount);
+    function loadPercent(percentage) {
+      let interval = setInterval(() => {
+        if (startCount === Math.round(percentage)) {
+          return clearInterval(interval);
+        }
+        startCount += 1;
+        setCount(startCount);
+      }, 20);
+    }
+    loadPercent(percentage);
+  }, [percentage]);
 
   return (
     <div className="relative flex h-[151px] w-[151px] items-center justify-center rounded-full bg-violet-50 bg-transparent p-3 shadow-xl shadow-slate-500 dark:bg-black-700 dark:shadow-black">
       <div className="dark:black-900 flex h-full w-full flex-col items-center justify-center rounded-full bg-violet-100 font-bold text-violet-600 shadow-inner shadow-slate-300 dark:bg-black-700 dark:shadow-black-500">
         {percentage < 100 ? (
           <>
-            <p className="font text-2xl">{Math.round(percentage)}%</p>
+            <p className="font text-2xl">{count}%</p>
             <p className="text-sm">Done</p>
           </>
         ) : (

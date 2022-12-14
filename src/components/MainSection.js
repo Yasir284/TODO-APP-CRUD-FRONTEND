@@ -36,7 +36,6 @@ export default function MainSection() {
     if (!data.success) {
       return toast(data.message, { type: "error" });
     }
-
     setTodos(data.todos);
   };
 
@@ -86,7 +85,6 @@ export default function MainSection() {
               className="flex h-10 flex-row items-center gap-6 rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
             >
               <input
-                onChange={handleSearch}
                 ref={searchRef}
                 className="bg-transparent"
                 type="search"
@@ -119,7 +117,6 @@ export default function MainSection() {
               <NavLink key={i} to={`/todo/tasks/${todo._id}`}>
                 <motion.li
                   layout
-                  transition={{ type: "spring", stiffness: 90 }}
                   className="flex flex-row text-violet-700 dark:text-white"
                 >
                   <div className="flex flex-row justify-between rounded-3xl bg-violet-100 p-10 shadow-xl shadow-slate-300 transition-all duration-200 ease-in-out hover:-translate-y-2 hover:scale-110 dark:bg-black-700 dark:shadow-black">
