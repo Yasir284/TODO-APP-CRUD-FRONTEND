@@ -2,21 +2,19 @@ import axios from "axios";
 import React, { useState, useRef } from "react";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import useMeasure from "react-use-measure";
 
 import {
   MdAdd,
   MdArrowBackIosNew,
-  MdCalendarToday,
+  MdArrowForwardIos,
   MdCheckCircle,
   MdClose,
   MdColorLens,
-  MdCreate,
   MdCreateNewFolder,
-  MdEdit,
   MdEditNote,
   MdKeyboardArrowRight,
   MdMoreHoriz,
-  MdOutlineArrowForward,
   MdOutlineCircle,
   MdOutlineDelete,
   MdSearch,
@@ -31,21 +29,16 @@ import UpdateTask from "./modals/UpdateTask";
 axios.defaults.baseURL = "http://localhost:4001";
 axios.defaults.withCredentials = true;
 
-const taskListVarient = {
+const taskUlVarient = {
   initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { ease: "easeInOut", duration: 1 } },
-};
-
-const taskVarient = {
-  initial: { opacity: 0, display: "none" },
   animate: {
     opacity: 1,
-    display: "block",
     transition: {
       duration: 0.2,
       ease: "easeInOut",
     },
   },
+  exit: { opacity: 0 },
 };
 
 const containerVarient = {
@@ -59,12 +52,9 @@ export default function TasksSection() {
   const [showInProgress, setShowInProgress] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
   const [todo, setTodo] = useState(null);
-  const [updateModal, setUpdateModal] = useState({
-    active: false,
-    taskId: null,
-  });
+
   const [changeTitle, setChangeTitle] = useState(false);
-  const [theme, setTheme] = useState(null);
+  const [todoTheme, setTodoTheme] = useState(null);
   const { todoId } = useParams();
   const taskRef = useRef();
   const titleRef = useRef();
@@ -82,7 +72,7 @@ export default function TasksSection() {
       return toast(data.message, { type: "error" });
     }
 
-    setTheme(data.todo[0].todoTheme);
+    setTodoTheme(data.todo[0].todoTheme);
     setTodo(data.todo[0]);
   };
 
@@ -157,49 +147,11 @@ export default function TasksSection() {
       return toast("Failed to change theme", { type: "error" });
     }
 
-    setTheme(theme);
+    setTodoTheme(theme);
     todoById(todoId);
     console.log(todo);
 
     toast("Todo theme changed", { type: "info" });
-  };
-
-  // Delete Task
-  const deleteTask = async (taskId) => {
-    const { data } = await axios
-      .delete(`/todo/tasks/deleteTask/${todoId}/${taskId}`)
-      .catch((error) => error.response);
-
-    if (!data.success) {
-      return toast("Failed to delete task", { type: "error" });
-    }
-
-    todoById(todoId);
-    toast("Task deleted", { type: "info" });
-  };
-
-  // Complete Task
-  const handleIsCompleted = async (isCompleted, taskId) => {
-    const { data } = await axios
-      .put(`/todo/tasks/UpdateTask/${taskId}`, { isCompleted: !isCompleted })
-      .catch((error) => error.response);
-
-    if (!data.success) {
-      return toast(data.message, { type: "error" });
-    }
-    todoById(todoId);
-  };
-
-  // Important Task
-  const handleIsImportant = async (isImportant, taskId) => {
-    const { data } = await axios
-      .put(`/todo/tasks/UpdateTask/${taskId}`, { isImportant: !isImportant })
-      .catch((error) => error.response);
-
-    if (!data.success) {
-      return toast(data.message, { type: "error" });
-    }
-    todoById(todoId);
   };
 
   // Search Todo
@@ -256,10 +208,10 @@ export default function TasksSection() {
       animate="animate"
       exit="exit"
       className={`relative flex flex-row justify-center ${
-        theme
-          ? theme === "black-white"
+        todoTheme
+          ? todoTheme === "black-white"
             ? "text-black dark:text-white"
-            : `text-${theme}-600`
+            : `text-${todoTheme}-600`
           : "text-violet-600 dark:text-white"
       }`}
     >
@@ -308,13 +260,13 @@ export default function TasksSection() {
                     setChangeTitle(true);
                     setActive(false);
                   }}
-                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-[#F9F9F9]  dark:text-white dark:hover:bg-black-500"
+                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-white-50  dark:text-white dark:hover:bg-black-500"
                 >
                   <MdEditNote size="1.2rem" />
                   <span>Rename List</span>
                 </li>
 
-                <li className="group flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-[#F9F9F9] dark:text-white dark:hover:bg-black-500">
+                <li className="group flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-black transition-all duration-200 ease-in-out hover:bg-white-50 dark:text-white dark:hover:bg-black-500">
                   <MdColorLens size="1.2rem" />
                   <span>Change Theme</span>
                   <MdKeyboardArrowRight size="1.2rem" />
@@ -334,7 +286,7 @@ export default function TasksSection() {
 
                 <li
                   onClick={deleteTodo}
-                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-red-600 transition-all duration-200 ease-in-out hover:bg-[#F9F9F9] dark:hover:bg-black-500"
+                  className="flex w-52 flex-row items-center gap-4 rounded-md py-4 pl-6 text-red-600 transition-all duration-200 ease-in-out hover:bg-white-50 dark:hover:bg-black-500"
                 >
                   <MdOutlineDelete size="1.2rem" />
                   <span>Delete List</span>
@@ -378,193 +330,92 @@ export default function TasksSection() {
         </form>
 
         {/* Tasks In Progress */}
-        <div className="mt-10 cursor-pointer">
+        <motion.div className="mt-10 cursor-pointer">
           <div
             onClick={() => setShowInProgress(!showInProgress)}
             className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold dark:border-black-500"
           >
-            {showInProgress ? (
-              <MdClose size="1.5rem" />
-            ) : (
-              <MdOutlineArrowForward size="1.5rem" />
-            )}
+            <MdArrowForwardIos
+              className={`${
+                showInProgress ? "rotate-90" : ""
+              } transition-all duration-200 ease-in-out`}
+              size="1.5rem"
+            />
             <p>In Progress</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
               {todo ? todo.tasks.filter((e) => !e.isCompleted).length : 0}
             </div>
           </div>
-
-          {showInProgress ? (
-            <motion.ul
-              variants={taskVarient}
-              key={showInProgress}
-              className="my-6"
-            >
-              {todo && todo.tasks.length > 0
-                ? todo.tasks
-                    .filter((e) => !e.isCompleted)
-                    .sort(
-                      (a, b) => Number(b.isImportant) - Number(a.isImportant)
-                    )
-                    .map((e, i) => (
-                      <motion.li
-                        variants={taskListVarient}
-                        layout
-                        key={i}
-                        className="group mb-3 flex flex-col rounded-md bg-white shadow-md shadow-slate-200 hover:bg-[#F9F9F9] dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
-                      >
-                        <div className="flex flex-row justify-between py-3 px-4 group-hover:border-b-2 group-hover:border-slate-200 dark:group-hover:border-black-800">
-                          <div className="flex flex-row items-center gap-2">
-                            <MdOutlineCircle
-                              onClick={() =>
-                                handleIsCompleted(e.isCompleted, e._id)
-                              }
-                              size="1.5rem"
-                            />
-                            <p>{e.task}</p>
-                          </div>
-
-                          <div className="flex flex-row items-center gap-2">
-                            <RiEditBoxLine
-                              onClick={() => {
-                                setUpdateModal({ active: true, taskId: e._id });
-                              }}
-                              title="Edit Task"
-                              className="text-emerald-400"
-                              size="1.5rem"
-                            />
-                            <RiDeleteBin6Line
-                              onClick={() => deleteTask(e._id)}
-                              title="Delete Task"
-                              className="text-red-400"
-                              size="1.5rem"
-                            />
-                            {e.isImportant ? (
-                              <MdStar
-                                onClick={() =>
-                                  handleIsImportant(e.isImportant, e._id)
-                                }
-                                size="1.5rem"
-                                className={`dark:text-white text-${theme}`}
-                              />
-                            ) : (
-                              <MdStarOutline
-                                onClick={() =>
-                                  handleIsImportant(e.isImportant, e._id)
-                                }
-                                size="1.5rem"
-                                className={`dark:text-white text-${theme}`}
-                              />
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="hidden -translate-y-10 flex-row gap-10 py-3 px-4 transition-all duration-200 ease-in-out group-hover:flex group-hover:translate-y-0">
-                          <div className="flex flex-row gap-2">
-                            <MdCreateNewFolder size="1.5rem" />
-                            <span>
-                              Created at :{" "}
-                              {new Date(e.taskCreatedAt).toLocaleString()}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-row gap-2">
-                            <MdEditNote size="1.5rem" />
-                            <span>
-                              Updated at :{" "}
-                              {new Date(e.taskUpdatedAt).toLocaleString()}
-                            </span>
-                          </div>
-                        </div>
-                      </motion.li>
-                    ))
-                : ""}
-            </motion.ul>
-          ) : (
-            ""
-          )}
-        </div>
+          <ResizeablePanel>
+            {showInProgress ? (
+              <motion.ul variants={taskUlVarient} className="my-6">
+                {todo && todo.tasks.length > 0
+                  ? todo.tasks
+                      .filter((e) => !e.isCompleted)
+                      .sort(
+                        (a, b) => Number(b.isImportant) - Number(a.isImportant)
+                      )
+                      .map((e, i) => (
+                        <TaskList
+                          i={i}
+                          e={e}
+                          todoById={todoById}
+                          todoId={todoId}
+                          todoTheme={todoTheme}
+                        />
+                      ))
+                  : ""}
+              </motion.ul>
+            ) : (
+              ""
+            )}
+          </ResizeablePanel>
+        </motion.div>
 
         {/* Tasks Completed */}
-        <div className="mt-10 cursor-pointer">
+        <motion.div className="mt-10 cursor-pointer">
           <div
             onClick={() => setShowCompleted(!showCompleted)}
             className="flex flex-row items-center gap-4 border-b-2 pb-1 font-semibold  dark:border-black-500"
           >
-            {showCompleted ? (
-              <MdClose size="1.5rem" />
-            ) : (
-              <MdOutlineArrowForward size="1.5rem" />
-            )}
+            <MdArrowForwardIos
+              className={`${
+                showCompleted ? "rotate-90" : ""
+              } transition-all duration-200 ease-in-out`}
+              size="1.5rem"
+            />
             <p>Completed</p>
+
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black">
               {todo ? todo.tasks.filter((e) => e.isCompleted).length : 0}
             </div>
           </div>
 
-          {showCompleted ? (
-            <motion.ul
-              key={showCompleted}
-              variants={taskVarient}
-              className="my-6"
-            >
-              {todo && todo.tasks.length > 0
-                ? todo.tasks
-                    .filter((e) => e.isCompleted)
-                    .map((e) => (
-                      <motion.li
-                        variants={taskListVarient}
-                        layout
-                        key={e._id}
-                        className="mb-3 flex flex-row justify-between rounded-md bg-white px-4 py-3 line-through shadow-md shadow-slate-200 hover:bg-[#F9F9F9] dark:bg-black-700 dark:shadow-black dark:hover:bg-black-500"
-                      >
-                        <div className="flex flex-row items-center gap-2">
-                          <MdCheckCircle
-                            onClick={() =>
-                              handleIsCompleted(e.isCompleted, e._id)
-                            }
-                            size="1.5rem"
-                          />
-                          <p>{e.task}</p>
-                        </div>
-                        <div className="flex flex-row items-center gap-2">
-                          <RiEditBoxLine
-                            onClick={() => {
-                              setUpdateModal({ active: true, taskId: e._id });
-                            }}
-                            className="text-emerald-400"
-                            size="1.5rem"
-                          />
-                          <RiDeleteBin6Line
-                            onClick={() => deleteTask(e._id)}
-                            className="text-red-400"
-                            size="1.5rem"
-                          />
-                          <MdStarOutline
-                            onClick={() =>
-                              handleIsImportant(e.isImportant, e._id)
-                            }
-                            size="1.5rem"
-                            className={`dark:text-white text-${theme}`}
-                          />
-                        </div>
-                      </motion.li>
-                    ))
-                : ""}
-            </motion.ul>
-          ) : (
-            ""
-          )}
-        </div>
+          <ResizeablePanel>
+            {showCompleted && (
+              <motion.ul
+                key={showCompleted}
+                variants={taskUlVarient}
+                className="my-6"
+              >
+                {todo && todo.tasks.length > 0
+                  ? todo.tasks
+                      .filter((e) => e.isCompleted)
+                      .map((e, i) => (
+                        <TaskList
+                          i={i}
+                          e={e}
+                          todoById={todoById}
+                          todoId={todoId}
+                          todoTheme={todoTheme}
+                        />
+                      ))
+                  : ""}
+              </motion.ul>
+            )}
+          </ResizeablePanel>
+        </motion.div>
       </div>
-
-      {/* Update Task Modal */}
-      <UpdateTask
-        updateModal={updateModal}
-        setUpdateModal={setUpdateModal}
-        todoId={todoId}
-        todoById={todoById}
-      />
 
       {/* Back button */}
       <NavLink
@@ -574,5 +425,154 @@ export default function TasksSection() {
         <MdArrowBackIosNew size="1.5rem" />
       </NavLink>
     </motion.div>
+  );
+}
+
+// Task list parent container
+function ResizeablePanel({ children }) {
+  const [ref, { height }] = useMeasure();
+  return (
+    <motion.div animate={{ height, transition: { ease: "easeInOut" } }}>
+      <div ref={ref}>{children}</div>
+    </motion.div>
+  );
+}
+
+// Task list items component
+function TaskList({ i, e, todoById, todoId, todoTheme }) {
+  const [ref, { height }] = useMeasure();
+  const [updateModal, setUpdateModal] = useState({
+    active: false,
+    taskId: null,
+  });
+
+  // Complete Task
+  const handleIsCompleted = async (isCompleted, taskId) => {
+    const { data } = await axios
+      .put(`/todo/tasks/UpdateTask/${taskId}`, { isCompleted: !isCompleted })
+      .catch((error) => error.response);
+
+    if (!data.success) {
+      return toast(data.message, { type: "error" });
+    }
+    todoById(todoId);
+  };
+
+  // Important Task
+  const handleIsImportant = async (isImportant, taskId) => {
+    const { data } = await axios
+      .put(`/todo/tasks/UpdateTask/${taskId}`, { isImportant: !isImportant })
+      .catch((error) => error.response);
+
+    if (!data.success) {
+      return toast(data.message, { type: "error" });
+    }
+    todoById(todoId);
+  };
+
+  // Delete Task
+  const deleteTask = async (taskId) => {
+    const { data } = await axios
+      .delete(`/todo/tasks/deleteTask/${todoId}/${taskId}`)
+      .catch((error) => error.response);
+
+    if (!data.success) {
+      return toast("Failed to delete task", { type: "error" });
+    }
+
+    todoById(todoId);
+    toast("Task deleted", { type: "info" });
+  };
+
+  return (
+    <motion.li
+      animate={{
+        height,
+        transition: { ease: "easeInOut", duration: 0.3 },
+      }}
+      layout
+      key={i}
+      className="group mb-3 rounded-md bg-white shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
+    >
+      <motion.div ref={ref}>
+        <div
+          className={`${
+            e.isCompleted ? "line-through" : ""
+          } flex flex-row justify-between rounded-md border-b-2 border-transparent px-4 py-3 group-hover:border-slate-200  dark:group-hover:border-black-800`}
+        >
+          <div className="flex flex-row items-center gap-2">
+            {e.isCompleted ? (
+              <MdCheckCircle
+                onClick={() => handleIsCompleted(e.isCompleted, e._id)}
+                size="1.5rem"
+              />
+            ) : (
+              <MdOutlineCircle
+                onClick={() => handleIsCompleted(e.isCompleted, e._id)}
+                size="1.5rem"
+              />
+            )}
+            <p>{e.task}</p>
+          </div>
+
+          <div className="flex flex-row items-center gap-2">
+            <RiEditBoxLine
+              onClick={() => {
+                setUpdateModal({
+                  active: true,
+                  taskId: e._id,
+                });
+              }}
+              title="Edit Task"
+              className="text-emerald-400"
+              size="1.5rem"
+            />
+            <RiDeleteBin6Line
+              onClick={() => deleteTask(e._id)}
+              title="Delete Task"
+              className="text-red-400"
+              size="1.5rem"
+            />
+            {e.isImportant ? (
+              <MdStar
+                onClick={() => handleIsImportant(e.isImportant, e._id)}
+                size="1.5rem"
+                className={`dark:text-white text-${todoTheme}`}
+              />
+            ) : (
+              <MdStarOutline
+                onClick={() => handleIsImportant(e.isImportant, e._id)}
+                size="1.5rem"
+                className={`dark:text-white text-${todoTheme}`}
+              />
+            )}
+          </div>
+        </div>
+
+        <motion.div className="hidden w-full flex-row  rounded-md px-4 py-1 text-xs text-slate-500 shadow-md shadow-slate-200 group-hover:flex dark:text-white dark:shadow-black">
+          <div className="flex flex-row items-center gap-2 border-r-2 pr-5 dark:border-black-500">
+            <MdCreateNewFolder size="1.5rem" />
+            <span>
+              Created at : {new Date(e.taskCreatedAt).toLocaleString()}
+            </span>
+          </div>
+
+          <div className="flex flex-row items-center gap-2 pl-5">
+            <MdEditNote size="1.5rem" />
+            <span>
+              Updated at : {new Date(e.taskUpdatedAt).toLocaleString()}
+            </span>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      {/* Update Task Modal */}
+      <UpdateTask
+        updateModal={updateModal}
+        setUpdateModal={setUpdateModal}
+        todoId={todoId}
+        todoById={todoById}
+      />
+    </motion.li>
   );
 }
