@@ -21,7 +21,7 @@ function SignIn() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [showPass, setShowPass] = useState(false);
-  const { setIsSignedIn } = useContext(UserContext);
+  const { setIsSignedIn, setUserInfo } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,6 +49,7 @@ function SignIn() {
     toast(creatUser.data.message, { type: "success" });
 
     setIsSignedIn(true);
+    setUserInfo(creatUser.data.user);
     emailRef.current.value = "";
     passwordRef.current.value = "";
     navigate("/todo");

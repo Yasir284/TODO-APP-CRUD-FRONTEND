@@ -20,6 +20,11 @@ const containerVarient = {
   exit: { opacity: 0 },
 };
 
+const todoListvarient = {
+  whileHover: { scale: 1.1 },
+  transition: { type: "spring", stiffness: 120 },
+};
+
 export default function MainSection() {
   const { isSignedIn } = useContext(UserContext);
   const [todos, setTodos] = useState(null);
@@ -27,7 +32,11 @@ export default function MainSection() {
   const searchRef = useRef();
 
   // Getting Todos
-  const getTodos = async () => {
+  const getTodos = async (isSignedIn) => {
+    if (!isSignedIn) {
+      return;
+    }
+
     const { data } = await axios
       .get("/todo/getTodos")
       .catch((error) => error.response);
@@ -60,8 +69,8 @@ export default function MainSection() {
   };
 
   useEffect(() => {
-    getTodos();
-  }, [setTodos]);
+    getTodos(isSignedIn);
+  }, [setTodos, isSignedIn]);
 
   return (
     <motion.div
@@ -71,7 +80,7 @@ export default function MainSection() {
       exit="exit"
       className="flex w-full justify-center"
     >
-      <div className="w-full bg-violet-50 px-32 py-12 dark:bg-black-900">
+      <div className="w-full bg-violet-50 p-6 dark:bg-black-900 xs:px-12 xs:py-12 sm:px-32">
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 border-violet-600 pb-2 text-violet-600 dark:border-white dark:text-white">
           <div className="flex flex-row items-center gap-6">
@@ -112,14 +121,15 @@ export default function MainSection() {
 
         {/* Todo List */}
         {isSignedIn && todos && todos.length > 0 ? (
-          <ul className="flex flex-row flex-wrap justify-center gap-12">
+          <ul className="flex w-full flex-row flex-wrap justify-center gap-12">
             {todos.map((todo, i) => (
               <NavLink key={i} to={`/todo/tasks/${todo._id}`}>
                 <motion.li
+                  {...todoListvarient}
                   layout
-                  className="flex flex-row text-violet-700 dark:text-white"
+                  className="text-violet-700 dark:text-white"
                 >
-                  <div className="flex flex-row justify-between rounded-3xl bg-violet-100 p-10 shadow-xl shadow-slate-300 transition-all duration-200 ease-in-out hover:-translate-y-2 hover:scale-110 dark:bg-black-700 dark:shadow-black">
+                  <div className="flex flex-row gap-12 rounded-3xl bg-violet-100 p-6 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black xs:p-10">
                     <div>
                       <h1 className="mb-5 text-2xl font-bold">{todo.title}</h1>
                       <p className="ml-2 mb-1">
@@ -136,11 +146,13 @@ export default function MainSection() {
                       <div className="ml-2 mt-4 flex flex-row items-center gap-2">
                         <MdCalendarToday />
                         <span>
-                          Created at :{" "}
-                          {new Date(todo.created_at).toLocaleString()}
+                          {new Date(todo.created_at).toDateString()}
+                          {", "}
+                          {new Date(todo.created_at).toLocaleTimeString()}
                         </span>
                       </div>
                     </div>
+
                     <ProgressBar
                       percentage={
                         (todo.tasks.filter((e) => e.isCompleted).length * 100) /
@@ -155,7 +167,7 @@ export default function MainSection() {
         ) : (
           <ul className="flex w-full flex-row flex-wrap justify-center gap-12">
             <li className="flex basis-[45%] flex-row">
-              <div className="flex w-full flex-row justify-between rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
+              <div className="flex w-full flex-row justify-between gap-12 rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
                 <div className="flex animate-pulse flex-col gap-2 ">
                   <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
                   <div className="mt-3 flex flex-row items-center gap-2">
@@ -172,12 +184,12 @@ export default function MainSection() {
                   </div>
                 </div>
 
-                <div className="h-[151px] w-[151px] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                <div className=" h-[10rem] w-[10rem] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
               </div>
             </li>
 
             <li className="flex basis-[45%] flex-row">
-              <div className="flex w-full flex-row justify-between rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
+              <div className="flex w-full flex-row justify-between gap-12 rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
                 <div className="flex animate-pulse flex-col gap-2 ">
                   <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
                   <div className="mt-3 flex flex-row items-center gap-2">
@@ -194,7 +206,7 @@ export default function MainSection() {
                   </div>
                 </div>
 
-                <div className="h-[151px] w-[151px] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                <div className=" h-[10rem] w-[10rem] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
               </div>
             </li>
           </ul>

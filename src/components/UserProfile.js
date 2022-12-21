@@ -22,7 +22,6 @@ function UserProfile() {
     }
 
     setIsSignedIn(false);
-    toast(res.data.message, { type: "info" });
   };
 
   return (

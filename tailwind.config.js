@@ -3,6 +3,11 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
+    screens: {
+      xs: "420px",
+      sm: "678px",
+      md: "786px",
+    },
     extend: {
       colors: {
         "black-900": "#111111",
@@ -14,6 +19,11 @@ module.exports = {
       backgroundImage: {
         "split-white-black":
           "linear-gradient(to right, #000000 55% , white 45%);",
+      },
+      fontSize: {
+        xsmall: "8px",
+        small: "10px",
+        medium: "14px",
       },
     },
   },

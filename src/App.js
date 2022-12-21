@@ -57,7 +57,9 @@ function App() {
 
   return (
     <>
-      <UserContext.Provider value={{ isSignedIn, setIsSignedIn, userInfo }}>
+      <UserContext.Provider
+        value={{ isSignedIn, setIsSignedIn, userInfo, setUserInfo }}
+      >
         <ThemeContext.Provider value={{ theme, setTheme }}>
           <ToastContainer
             position="top-right"

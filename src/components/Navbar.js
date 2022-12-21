@@ -14,7 +14,7 @@ function Navbar() {
   const { isSignedIn } = useContext(UserContext);
   return (
     <nav className="sticky top-0 right-0 z-40 backdrop-blur-sm backdrop-filter ">
-      <div className="border-b-2  bg-violet-800 bg-opacity-20 px-12 py-4 text-violet-600 dark:border-black-500 dark:bg-black dark:bg-opacity-10 dark:text-white">
+      <div className="border-b-2 bg-violet-800 bg-opacity-20 px-6 py-4 text-violet-600 dark:border-black-500 dark:bg-black dark:bg-opacity-10 dark:text-white xs:px-12 xs:py-4">
         <div className="relative flex flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-6">
             <div className="flex flex-row items-center gap-2">
