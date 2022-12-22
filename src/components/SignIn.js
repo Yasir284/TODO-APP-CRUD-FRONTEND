@@ -7,8 +7,11 @@ import { MdArrowBackIosNew } from "react-icons/md";
 import { UserContext } from "../context/UserContext";
 import { motion } from "framer-motion";
 
-axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
+axios.defaults.headers = {
+  Authorization: sessionStorage.getItem("bearerToken"),
+};
 
 const containerVarient = {
   initial: { opacity: 0 },
@@ -48,6 +51,11 @@ function SignIn() {
 
     toast(creatUser.data.message, { type: "success" });
 
+    let token = "Bearer " + creatUser.data.token;
+    console.log(token);
+
+    sessionStorage.setItem("bearerToken", token);
+
     setIsSignedIn(true);
     setUserInfo(creatUser.data.user);
     emailRef.current.value = "";
@@ -61,9 +69,9 @@ function SignIn() {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="flex w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900"
+      className="flex h-[80vh] w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900"
     >
-      <div className="mt-16 flex w-1/3 flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
+      <div className="flex w-[80%] flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black xs:w-[55%] sm:w-[40%]">
         <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
           Sign In
         </h1>
@@ -108,7 +116,7 @@ function SignIn() {
               />
             )}
           </div>
-          <div className="flex w-full flex-row items-center justify-center gap-6">
+          <div className="mt-12 flex w-full flex-row items-center justify-center gap-6">
             <NavLink
               to="/todo"
               className="rounded-full border-2 border-white p-3 transition-all duration-200 ease-in-out hover:bg-white hover:text-violet-600 dark:hover:text-black"

@@ -16,8 +16,11 @@ import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import TasksSection from "./components/TasksSection";
 
-axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
+axios.defaults.headers = {
+  Authorization: sessionStorage.getItem("bearerToken"),
+};
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -58,7 +61,12 @@ function App() {
   return (
     <>
       <UserContext.Provider
-        value={{ isSignedIn, setIsSignedIn, userInfo, setUserInfo }}
+        value={{
+          isSignedIn,
+          setIsSignedIn,
+          userInfo,
+          setUserInfo,
+        }}
       >
         <ThemeContext.Provider value={{ theme, setTheme }}>
           <ToastContainer

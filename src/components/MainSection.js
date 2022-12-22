@@ -11,8 +11,11 @@ import { motion } from "framer-motion";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
-axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
+axios.defaults.headers = {
+  Authorization: sessionStorage.getItem("bearerToken"),
+};
 
 const containerVarient = {
   initial: { opacity: 0 },
@@ -84,18 +87,18 @@ export default function MainSection() {
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 border-violet-600 pb-2 text-violet-600 dark:border-white dark:text-white">
           <div className="flex flex-row items-center gap-6">
-            <h1 className="text-3xl font-extrabold">My Todos</h1>
+            <h1 className="text-2xl font-extrabold xs:text-3xl">My Todos</h1>
           </div>
 
           {/* Search todo */}
           <div className="flex flex-row items-center gap-6">
             <form
               onSubmit={handleSearch}
-              className="flex h-10 flex-row items-center gap-6 rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
+              className="flex h-10 flex-row items-center rounded-3xl bg-white px-4 shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
             >
               <input
                 ref={searchRef}
-                className="bg-transparent"
+                className="max-w-40 w-40 bg-transparent xs:w-auto xs:max-w-none"
                 type="search"
                 placeholder="Search todo"
               />
@@ -129,7 +132,7 @@ export default function MainSection() {
                   layout
                   className="text-violet-700 dark:text-white"
                 >
-                  <div className="flex flex-row gap-12 rounded-3xl bg-violet-100 p-6 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black xs:p-10">
+                  <div className="flex w-[80vw] flex-row justify-between rounded-3xl bg-violet-100 p-6 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black xs:gap-12 xs:p-10">
                     <div>
                       <h1 className="mb-5 text-2xl font-bold">{todo.title}</h1>
                       <p className="ml-2 mb-1">
@@ -143,7 +146,7 @@ export default function MainSection() {
                         Done
                       </p>
 
-                      <div className="ml-2 mt-4 flex flex-row items-center gap-2">
+                      <div className="ml-2 mt-2 flex flex-row items-center gap-2 border-t-2 border-slate-300 pt-2 dark:border-black-500">
                         <MdCalendarToday />
                         <span>
                           {new Date(todo.created_at).toDateString()}

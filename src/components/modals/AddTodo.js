@@ -5,7 +5,7 @@ import { MdAdd, MdClose } from "react-icons/md";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
 
-axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
 
 const containerVarient = {

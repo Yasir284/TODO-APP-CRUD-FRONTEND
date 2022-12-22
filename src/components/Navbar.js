@@ -5,8 +5,11 @@ import { ThemeContext } from "../context/ThemeContext";
 import { UserContext } from "../context/UserContext";
 import logo from "../images/logo.png";
 import UserProfile from "./UserProfile";
-axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
+axios.defaults.headers = {
+  Authorization: sessionStorage.getItem("bearerToken"),
+};
 
 function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);

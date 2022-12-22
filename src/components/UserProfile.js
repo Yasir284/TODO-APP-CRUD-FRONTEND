@@ -5,8 +5,11 @@ import { useContext } from "react";
 import { MdLogout } from "react-icons/md";
 import { toast } from "react-toastify";
 import { UserContext } from "../context/UserContext";
-axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
+axios.defaults.headers = {
+  Authorization: sessionStorage.getItem("bearerToken"),
+};
 
 function UserProfile() {
   const { setIsSignedIn, userInfo } = useContext(UserContext);
@@ -20,7 +23,7 @@ function UserProfile() {
     if (!res.data.success) {
       return toast(res.data.message, { type: "error" });
     }
-
+    sessionStorage.clear();
     setIsSignedIn(false);
   };
 

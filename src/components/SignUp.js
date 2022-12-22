@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { MdArrowBackIosNew } from "react-icons/md";
 
-axios.defaults.baseURL = "http://localhost:4001";
+axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
 
 const containerVarient = {
@@ -66,9 +66,9 @@ function SignUp() {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="flex w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900"
+      className="flex h-[80vh] w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900 xs:h-[89vh]"
     >
-      <div className="mt-8 flex w-1/3 flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
+      <div className="flex w-[80%] flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black xs:w-[55%] sm:w-[40%]">
         <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
           Sign Up
         </h1>
