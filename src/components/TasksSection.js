@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useRef } from "react";
 import { useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import useMeasure from "react-use-measure";
 
 import {
@@ -353,7 +353,7 @@ export default function TasksSection() {
             </div>
           </div>
 
-          <ResizeablePanel id={showInProgress}>
+          <ResizeablePanel>
             {showInProgress ? (
               <motion.ul variants={taskUlVarient} className="my-6">
                 {todo && todo.tasks.length > 0
@@ -398,7 +398,7 @@ export default function TasksSection() {
             </div>
           </div>
 
-          <ResizeablePanel id={showCompleted}>
+          <ResizeablePanel>
             {showCompleted && (
               <motion.ul
                 key={showCompleted}
@@ -436,7 +436,7 @@ export default function TasksSection() {
 }
 
 // Task list parent container
-function ResizeablePanel({ children, id }) {
+function ResizeablePanel({ children }) {
   const [ref, { height }] = useMeasure();
   return (
     <motion.div
@@ -495,12 +495,12 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
 
   return (
     <motion.li
+      key={i}
       animate={{
         height,
         transition: { ease: "easeOut", duration: 0.3 },
       }}
       layout
-      key={i}
       className="group mb-3 rounded-md bg-white shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
     >
       <motion.div ref={ref}>
@@ -558,12 +558,7 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
           </div>
         </div>
 
-        <motion.div
-          // key={height}
-          // initial={{ opacity: 0 }}
-          // animate={{ opacity: 1, transition: { delay: 0.5 } }}
-          className="hidden w-full flex-row  rounded-md px-4 py-1 text-xs text-slate-500 shadow-md shadow-slate-200 group-hover:flex dark:text-white dark:shadow-black"
-        >
+        <div className="hidden w-full flex-row  rounded-md px-4 py-1 text-xs text-slate-500 shadow-md shadow-slate-200 group-hover:flex dark:text-white dark:shadow-black">
           <div className="flex flex-row items-center gap-2 border-r-2 pr-5 dark:border-black-500">
             <MdCreateNewFolder size="1.5rem" />
             <span>
@@ -577,7 +572,7 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
               Updated at : {new Date(e.taskUpdatedAt).toLocaleString()}
             </span>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Update Task Modal */}
