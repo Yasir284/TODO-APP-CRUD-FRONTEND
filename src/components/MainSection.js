@@ -148,7 +148,7 @@ export default function MainSection() {
 
                       <div
                         title="Created at"
-                        className="ml-2 mt-2 flex w-52 flex-row items-center gap-2 break-words border-t-2 border-slate-300 pt-2 dark:border-black-500"
+                        className="ml-2 mt-2 flex w-52 flex-row items-center gap-2 break-words border-t-2 border-slate-300 pt-2 dark:border-black-500 xs:w-64"
                       >
                         <MdCalendarToday />
                         <span>

@@ -58,7 +58,7 @@ function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="relative flex w-1/3 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black"
+            className="relative flex w-96 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black"
           >
             <MdClose
               size="1.5rem"

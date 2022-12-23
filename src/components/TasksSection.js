@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useRef } from "react";
 import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import useMeasure from "react-use-measure";
 
 import {
@@ -58,7 +58,9 @@ export default function TasksSection() {
 
   const [changeTitle, setChangeTitle] = useState(false);
   const [todoTheme, setTodoTheme] = useState(null);
+
   const { todoId } = useParams();
+
   const taskRef = useRef();
   const titleRef = useRef();
   const searchRef = useRef();
@@ -218,7 +220,7 @@ export default function TasksSection() {
           : "text-violet-600 dark:text-white"
       }`}
     >
-      <div className="w-[80%] basis-3/4 bg-violet-50 p-12 dark:bg-black-900">
+      <div className="w-full bg-violet-50 p-6 dark:bg-black-900 xs:py-12 sm:px-36">
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 pb-2">
           <div className="flex flex-row items-center gap-6">
@@ -298,6 +300,7 @@ export default function TasksSection() {
             </div>
           </div>
 
+          {/* Search tasks */}
           <div className="flex flex-row items-center gap-6">
             <form
               onSubmit={handleSearch}
@@ -306,7 +309,7 @@ export default function TasksSection() {
               <input
                 onChange={handleSearch}
                 ref={searchRef}
-                className="bg-transparent"
+                className="w-36 bg-transparent xs:w-40"
                 type="search"
                 placeholder="Search task"
               />
@@ -349,7 +352,8 @@ export default function TasksSection() {
               {todo ? todo.tasks.filter((e) => !e.isCompleted).length : 0}
             </div>
           </div>
-          <ResizeablePanel>
+
+          <ResizeablePanel id={showInProgress}>
             {showInProgress ? (
               <motion.ul variants={taskUlVarient} className="my-6">
                 {todo && todo.tasks.length > 0
@@ -394,7 +398,7 @@ export default function TasksSection() {
             </div>
           </div>
 
-          <ResizeablePanel>
+          <ResizeablePanel id={showCompleted}>
             {showCompleted && (
               <motion.ul
                 key={showCompleted}
@@ -423,7 +427,7 @@ export default function TasksSection() {
       {/* Back button */}
       <NavLink
         to="/"
-        className={`fixed left-[5%] top-[50%] my-auto rounded-full border-2 p-3 shadow-md shadow-slate-200 transition-all duration-200 ease-in-out hover:bg-violet-600 hover:text-white dark:text-white dark:shadow-black dark:hover:bg-white dark:hover:text-black`}
+        className={`fixed left-[5%] top-[50%] my-auto hidden rounded-full border-2 p-3 shadow-md shadow-slate-200 transition-all duration-200 ease-in-out hover:bg-violet-600 hover:text-white dark:text-white dark:shadow-black dark:hover:bg-white dark:hover:text-black sm:block`}
       >
         <MdArrowBackIosNew size="1.5rem" />
       </NavLink>
@@ -432,10 +436,12 @@ export default function TasksSection() {
 }
 
 // Task list parent container
-function ResizeablePanel({ children }) {
+function ResizeablePanel({ children, id }) {
   const [ref, { height }] = useMeasure();
   return (
-    <motion.div animate={{ height, transition: { ease: "easeInOut" } }}>
+    <motion.div
+      animate={{ height, transition: { ease: "easeOut", duration: 0.3 } }}
+    >
       <div ref={ref}>{children}</div>
     </motion.div>
   );
@@ -491,7 +497,7 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
     <motion.li
       animate={{
         height,
-        transition: { ease: "easeInOut", duration: 0.3 },
+        transition: { ease: "easeOut", duration: 0.3 },
       }}
       layout
       key={i}
@@ -552,7 +558,12 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
           </div>
         </div>
 
-        <motion.div className="hidden w-full flex-row  rounded-md px-4 py-1 text-xs text-slate-500 shadow-md shadow-slate-200 group-hover:flex dark:text-white dark:shadow-black">
+        <motion.div
+          // key={height}
+          // initial={{ opacity: 0 }}
+          // animate={{ opacity: 1, transition: { delay: 0.5 } }}
+          className="hidden w-full flex-row  rounded-md px-4 py-1 text-xs text-slate-500 shadow-md shadow-slate-200 group-hover:flex dark:text-white dark:shadow-black"
+        >
           <div className="flex flex-row items-center gap-2 border-r-2 pr-5 dark:border-black-500">
             <MdCreateNewFolder size="1.5rem" />
             <span>
