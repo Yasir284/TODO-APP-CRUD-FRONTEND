@@ -28,8 +28,11 @@ function ProgressBar({ percentage }) {
         <div className="dark:black-900 flex h-full w-full flex-col items-center justify-center rounded-full bg-violet-100 font-bold text-violet-600 shadow-inner shadow-slate-300 dark:bg-black-700 dark:shadow-black-500">
           {percentage < 100 ? (
             <>
-              <p className="font text-2xl">{count}%</p>
-              <p className="text-sm">Done</p>
+              <div className=""></div>
+              <div>
+                <p className="font text-2xl">{count}%</p>
+                <p className="text-sm">Done</p>
+              </div>
             </>
           ) : (
             <MdCheck size="5rem" />
@@ -51,17 +54,17 @@ function ProgressBar({ percentage }) {
             </linearGradient>
           </defs>
           <motion.circle
-            initial={{ strokeDashoffset: 460 }}
+            initial={{ strokeDashoffset: "28.75rem" }}
             animate={{
-              strokeDashoffset: 460 - 460 * (percentage / 100),
+              strokeDashoffset: `${28.75 - 28.75 * (percentage / 100)}rem`,
               transition: { ease: "easeInOut", duration: 0.5, delay: 0.6 },
             }}
             cx="5rem"
             cy="5rem"
             r="4.6rem"
             strokeLinecap="round"
-            strokeDasharray="460"
-            strokeDashoffset={`${460 - 460 * (percentage / 100)}`}
+            strokeDasharray="28.75rem"
+            strokeDashoffset={`${28.75 - 28.75 * (percentage / 100)}rem`}
             strokeWidth="0.75rem"
           />
         </svg>
