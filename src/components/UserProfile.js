@@ -3,6 +3,7 @@ import axios from "axios";
 import React from "react";
 import { useContext } from "react";
 import { MdLogout } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../context/UserContext";
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
@@ -13,6 +14,7 @@ axios.defaults.headers = {
 
 function UserProfile() {
   const { setIsSignedIn, userInfo } = useContext(UserContext);
+  const navigate = useNavigate();
 
   // Log out function
   const handleLogOut = async () => {
@@ -25,6 +27,7 @@ function UserProfile() {
     }
     sessionStorage.clear();
     setIsSignedIn(false);
+    navigate("/");
   };
 
   return (
