@@ -146,7 +146,10 @@ export default function MainSection() {
                         Done
                       </p>
 
-                      <div className="ml-2 mt-2 flex flex-row items-center gap-2 border-t-2 border-slate-300 pt-2 dark:border-black-500">
+                      <div
+                        title="Created at"
+                        className="ml-2 mt-2 flex w-52 flex-row items-center gap-2 break-words border-t-2 border-slate-300 pt-2 dark:border-black-500"
+                      >
                         <MdCalendarToday />
                         <span>
                           {new Date(todo.created_at).toDateString()}

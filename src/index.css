@@ -11,7 +11,7 @@
 }
 
 html {
-  font-size: 10px;
+  font-size: 11px;
 }
 
 body {
@@ -64,7 +64,7 @@ code {
 
 @media (min-width: 420px) {
   html {
-    font-size: 10px;
+    font-size: 11px;
   }
 }
 @media (min-width: 678px) {

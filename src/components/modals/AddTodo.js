@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useRef, useState } from "react";
 import { MdAdd, MdClose } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -79,14 +80,14 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   return (
     <AnimatePresence>
       {showAddTodo && (
-        <div className="bg-opacity- fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
+        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
           <motion.div
             key={showAddTodo}
             variants={containerVarient}
             initial="initial"
             animate="animate"
             exit="exit"
-            className="relative flex w-1/3 flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black"
+            className="relative flex flex-col items-center rounded-3xl bg-violet-700 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black"
           >
             <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
               Create Todo
@@ -106,7 +107,7 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
                 className="w-full border-b-2 bg-transparent text-xl text-white placeholder-white"
               />
 
-              <div className="mb-4 flex w-full flex-row items-center gap-4 rounded-3xl border-2 border-white bg-white pl-4 dark:bg-black-500">
+              <div className="mb-4 flex w-full flex-row items-center gap-2 rounded-3xl border-2 border-white bg-white pl-4 dark:bg-black-500">
                 <MdAdd
                   size="1.5rem"
                   className="text-violet-600 dark:text-white"
@@ -115,44 +116,41 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
                   ref={taskRef}
                   type="text"
                   placeholder="Add Task"
-                  className="bg-transparent py-1 text-black dark:text-white"
+                  className="w-64 bg-transparent py-1 text-black dark:text-white"
                 />
                 <button
-                  type="button"
+                  type="submit"
                   onClick={addTask}
-                  className="ml-14 rounded-3xl bg-violet-600 px-6 py-2 font-semibold text-white transition-all duration-200 ease-in-out hover:scale-110 active:scale-50 dark:bg-violet-600 dark:text-white"
+                  className="rounded-3xl bg-violet-600 px-6 py-2 font-semibold text-white transition-all duration-200 ease-in-out hover:scale-110 active:scale-75 dark:bg-violet-600 dark:text-white"
                 >
                   Add
                 </button>
               </div>
             </form>
 
-            <div className="mb-4 h-72 w-full overflow-y-scroll rounded-md border-2 border-white p-2">
-              <ul className="w-full">
-                {tasks.length > 0 ? (
-                  tasks.map((e, index) => (
-                    <li
-                      key={index}
-                      className="mb-2 flex flex-row justify-between rounded-3xl border-2 border-white py-1 px-4"
-                    >
-                      <p>{e.task}</p>
-                      <button
-                        onClick={() => deleteTask(index)}
-                        className="text-red-600"
-                      >
-                        Delete
-                      </button>
-                    </li>
-                  ))
-                ) : (
-                  <p className="mt-4 text-center">No tasks added</p>
-                )}
-              </ul>
-            </div>
+            <ul className="mb-4 h-72 w-full rounded-md border-2 border-white p-2">
+              {tasks.length > 0 ? (
+                tasks.map((e, index) => (
+                  <li
+                    key={index}
+                    className="mb-2 flex flex-row items-center justify-between gap-2 rounded-md border-2 border-white py-1 px-4"
+                  >
+                    <p className="w-72 break-words">{e.task}</p>
+                    <RiDeleteBin6Line
+                      onClick={() => deleteTask(index)}
+                      className="text-red-600"
+                      size="1.5rem"
+                    />
+                  </li>
+                ))
+              ) : (
+                <p className="mt-4 text-center">No tasks added</p>
+              )}
+            </ul>
 
             <button
               onClick={createTodo}
-              className="w-full rounded-md border-2 border-white py-1 transition-all duration-200 ease-in-out hover:bg-white hover:text-violet-600 active:scale-50 dark:hover:text-black"
+              className="w-full rounded-md border-2 border-white py-1 transition-all duration-200 ease-in-out hover:bg-white hover:text-violet-600 active:scale-95 dark:hover:text-black"
             >
               Create Todo
             </button>
