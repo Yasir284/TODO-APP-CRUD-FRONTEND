@@ -68,13 +68,13 @@ function SignUp() {
       exit="exit"
       className="flex h-[80vh] w-full items-center justify-center bg-violet-50 text-white dark:bg-black-900 xs:h-[89vh]"
     >
-      <div className="flex w-[80%] flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black xs:w-[55%] sm:w-[40%]">
+      <div className="flex flex-col items-center rounded-3xl bg-violet-600 p-10 shadow-lg shadow-slate-500 dark:bg-black-700 dark:shadow-black">
         <h1 className="mb-10 w-full border-b-2 pb-2 text-center text-2xl font-bold dark:border-black-500">
           Sign Up
         </h1>
         <form
           onSubmit={handleSubmit}
-          className="flex w-full flex-col items-start"
+          className="flex w-96 flex-col items-start"
         >
           <label htmlFor="fullName" className="ml-2 mb-2">
             Full Name:

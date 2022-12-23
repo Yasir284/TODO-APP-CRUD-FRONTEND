@@ -132,7 +132,7 @@ export default function MainSection() {
                   layout
                   className="text-violet-700 dark:text-white"
                 >
-                  <div className="flex w-[80vw] flex-row justify-between rounded-3xl bg-violet-100 p-6 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black xs:gap-12 xs:p-10">
+                  <div className="flex w-[80vw] flex-row justify-between rounded-3xl bg-violet-100 p-6 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black xs:w-auto xs:gap-12 xs:p-10">
                     <div>
                       <h1 className="mb-5 text-2xl font-bold">{todo.title}</h1>
                       <p className="ml-2 mb-1">
@@ -169,49 +169,31 @@ export default function MainSection() {
           </ul>
         ) : (
           <ul className="flex w-full flex-row flex-wrap justify-center gap-12">
-            <li className="flex basis-[45%] flex-row">
-              <div className="flex w-full flex-row justify-between gap-12 rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
-                <div className="flex animate-pulse flex-col gap-2 ">
-                  <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                  <div className="mt-3 flex flex-row items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                    <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                  </div>
-                  <div className="flex flex-row items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                    <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                  </div>
-                  <div className="mt-4 flex flex-row items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                    <div className="h-3 w-48 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                  </div>
-                </div>
+            {new Array(4)
+              .fill(
+                <li className="flex basis-[45%] flex-row">
+                  <div className="flex w-full flex-row justify-between gap-12 rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
+                    <div className="flex animate-pulse flex-col gap-2 ">
+                      <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                      <div className="mt-3 flex flex-row items-center gap-2">
+                        <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                        <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                      </div>
+                      <div className="flex flex-row items-center gap-2">
+                        <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                        <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                      </div>
+                      <div className="mt-4 flex flex-row items-center gap-2">
+                        <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                        <div className="h-3 w-48 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                      </div>
+                    </div>
 
-                <div className=" h-[10rem] w-[10rem] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-              </div>
-            </li>
-
-            <li className="flex basis-[45%] flex-row">
-              <div className="flex w-full flex-row justify-between gap-12 rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
-                <div className="flex animate-pulse flex-col gap-2 ">
-                  <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                  <div className="mt-3 flex flex-row items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                    <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className=" h-[10rem] w-[10rem] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
                   </div>
-                  <div className="flex flex-row items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                    <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                  </div>
-                  <div className="mt-4 flex flex-row items-center gap-2">
-                    <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                    <div className="h-3 w-48 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                  </div>
-                </div>
-
-                <div className=" h-[10rem] w-[10rem] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-              </div>
-            </li>
+                </li>
+              )
+              .map((e) => e)}
           </ul>
         )}
       </div>
