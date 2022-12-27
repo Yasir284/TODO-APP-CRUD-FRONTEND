@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,11 +10,12 @@ import { ThemeContext } from "./context/ThemeContext";
 import { UserContext } from "./context/UserContext";
 
 // Components
-import MainSection from "./components/MainSection";
-import Navbar from "./components/Navbar";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
-import TasksSection from "./components/TasksSection";
+import Loader from "./components/modals/Loader";
+const MainSection = lazy(() => import("./components/MainSection"));
+const Navbar = lazy(() => import("./components/Navbar"));
+const SignIn = lazy(() => import("./components/SignIn"));
+const SignUp = lazy(() => import("./components/SignUp"));
+const TasksSection = lazy(() => import("./components/TasksSection"));
 
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
@@ -75,14 +76,17 @@ function App() {
             theme={theme === "dark" ? "dark" : "light"}
           />
           <Navbar />
+
           <AnimatePresence>
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<Navigate replace to="/todo" />} />
-              <Route path="/todo" element={<MainSection />} />
-              <Route path="/signUp" element={<SignUp />} />
-              <Route path="/signIn" element={<SignIn />} />
-              <Route path="/todo/tasks/:todoId" element={<TasksSection />} />
-            </Routes>
+            <Suspense fallback={<Loader />}>
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<Navigate replace to="/todo" />} />
+                <Route path="/todo" element={<MainSection />} />
+                <Route path="/signUp" element={<SignUp />} />
+                <Route path="/signIn" element={<SignIn />} />
+                <Route path="/todo/tasks/:todoId" element={<TasksSection />} />
+              </Routes>
+            </Suspense>
           </AnimatePresence>
         </ThemeContext.Provider>
       </UserContext.Provider>

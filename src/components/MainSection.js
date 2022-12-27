@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import AddTodo from "./modals/AddTodo";
 import { toast } from "react-toastify";
@@ -8,7 +8,6 @@ import { MdAdd, MdCalendarToday, MdSearch } from "react-icons/md";
 import ProgressBar from "./ProgressBar/ProgressBar";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
@@ -172,31 +171,29 @@ export default function MainSection() {
           </ul>
         ) : (
           <ul className="flex w-full flex-row flex-wrap justify-center gap-12">
-            {new Array(4)
-              .fill(
-                <li className="flex basis-[45%] flex-row">
-                  <div className="flex w-full flex-row justify-between gap-12 rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
-                    <div className="flex animate-pulse flex-col gap-2 ">
-                      <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                      <div className="mt-3 flex flex-row items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                        <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                      </div>
-                      <div className="flex flex-row items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                        <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                      </div>
-                      <div className="mt-4 flex flex-row items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
-                        <div className="h-3 w-48 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
-                      </div>
+            {new Array(4).fill("").map((_e, i) => (
+              <li key={i} className="flex basis-[45%] flex-row">
+                <div className="flex w-full flex-row justify-between gap-12 rounded-3xl bg-white p-10 shadow-xl shadow-slate-300 dark:bg-black-700 dark:shadow-black">
+                  <div className="flex animate-pulse flex-col gap-2 ">
+                    <div className="mb-2 h-3 w-32 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className="mt-3 flex flex-row items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                      <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
                     </div>
-
-                    <div className=" h-[10rem] w-[10rem] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                    <div className="flex flex-row items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                      <div className="h-3 w-28 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                    </div>
+                    <div className="mt-4 flex flex-row items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                      <div className="h-3 w-48 rounded-3xl bg-slate-200 dark:bg-[#706b6b]"></div>
+                    </div>
                   </div>
-                </li>
-              )
-              .map((e) => e)}
+
+                  <div className=" h-[10rem] w-[10rem] animate-pulse  rounded-full bg-slate-200 dark:bg-[#706b6b]"></div>
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </div>

@@ -9,9 +9,6 @@ import { motion } from "framer-motion";
 
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
-axios.defaults.headers = {
-  Authorization: sessionStorage.getItem("bearerToken"),
-};
 
 const containerVarient = {
   initial: { opacity: 0 },
@@ -52,7 +49,6 @@ function SignIn() {
     toast(creatUser.data.message, { type: "success" });
 
     let token = "Bearer " + creatUser.data.token;
-    console.log(token);
 
     sessionStorage.setItem("bearerToken", token);
 
@@ -60,7 +56,8 @@ function SignIn() {
     setUserInfo(creatUser.data.user);
     emailRef.current.value = "";
     passwordRef.current.value = "";
-    navigate("/todo");
+
+    navigate("/");
   };
 
   return (
