@@ -1,5 +1,5 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -82,11 +82,10 @@ function App() {
           <AnimatePresence>
             <Suspense fallback={<Loader />}>
               <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<Navigate replace to="/todo" />} />
-                <Route path="/todo" element={<MainSection />} />
+                <Route path="/" element={<MainSection />} />
                 <Route path="/signUp" element={<SignUp />} />
                 <Route path="/signIn" element={<SignIn />} />
-                <Route path="/todo/tasks/:todoId" element={<TasksSection />} />
+                <Route path="/tasks/:todoId" element={<TasksSection />} />
               </Routes>
             </Suspense>
           </AnimatePresence>

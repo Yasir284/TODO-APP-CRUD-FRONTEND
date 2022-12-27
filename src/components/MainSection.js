@@ -124,7 +124,7 @@ export default function MainSection() {
         {isSignedIn && todos && todos.length > 0 ? (
           <ul className="flex w-full flex-row flex-wrap justify-center gap-12">
             {todos.map((todo, i) => (
-              <NavLink key={i} to={`/todo/tasks/${todo._id}`}>
+              <NavLink key={i} to={`/tasks/${todo._id}`}>
                 <motion.li
                   {...todoListvarient}
                   layout

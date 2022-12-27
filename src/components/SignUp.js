@@ -126,7 +126,7 @@ function SignUp() {
 
           <div className="flex w-full flex-row justify-center gap-4">
             <NavLink
-              to="/todo"
+              to="/"
               className="rounded-full border-2 border-white p-3 transition-all duration-200 ease-in-out hover:bg-white hover:text-violet-600 dark:hover:text-black"
             >
               <MdArrowBackIosNew size="1.5rem" />
