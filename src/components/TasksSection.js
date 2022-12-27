@@ -21,6 +21,7 @@ import {
   MdStar,
   MdStarOutline,
 } from "react-icons/md";
+import { BiInfoCircle } from "react-icons/bi";
 import { RiDeleteBin6Line, RiEditBoxLine } from "react-icons/ri";
 import { useNavigate, NavLink, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -495,36 +496,62 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
 
   return (
     <motion.li
-      key={i}
+      key={e._id}
       animate={{
         height,
         transition: { ease: "easeOut", duration: 0.3 },
       }}
-      layout
-      className="group mb-3 rounded-md bg-white shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
+      layoutId={e._id}
+      className="mb-3 rounded-md bg-white shadow-md shadow-slate-200 dark:bg-black-700 dark:shadow-black"
     >
       <motion.div ref={ref}>
         <div
           className={`${
             e.isCompleted ? "line-through" : ""
-          } flex flex-row justify-between rounded-md border-b-2 border-transparent px-4 py-3 group-hover:border-slate-200  dark:group-hover:border-black-800`}
+          } flex flex-row justify-between rounded-md border-b-2 border-transparent px-4 py-3`}
         >
           <div className="flex flex-row items-center gap-2">
             {e.isCompleted ? (
               <MdCheckCircle
                 onClick={() => handleIsCompleted(e.isCompleted, e._id)}
-                size="1.5rem"
+                className="min-w-[1.5rem]"
+                size="1.4rem"
               />
             ) : (
               <MdOutlineCircle
                 onClick={() => handleIsCompleted(e.isCompleted, e._id)}
-                size="1.5rem"
+                className="min-w-[1.5rem]"
+                size="1.4rem"
               />
             )}
             <p>{e.task}</p>
           </div>
 
           <div className="flex flex-row items-center gap-2">
+            <div className="group relative">
+              <BiInfoCircle size="1.5rem" />
+
+              <ul className="absolute bottom-10 -right-28 hidden w-[20rem] flex-col rounded-md  bg-white px-4 py-2 text-xs text-slate-500 shadow-md shadow-slate-200 group-active:flex dark:bg-black-800 dark:text-white dark:shadow-black">
+                <li className="mb-2 flex flex-row items-center gap-2 border-b-2 pb-2 pr-5 dark:border-black-500">
+                  <MdCreateNewFolder size="1.5rem" />
+                  <span>
+                    Created at : {new Date(e.taskCreatedAt).toDateString()}
+                    {", "}
+                    {new Date(e.taskCreatedAt).toLocaleTimeString()}
+                  </span>
+                </li>
+
+                <li className="flex flex-row items-center gap-2">
+                  <MdEditNote size="1.5rem" />
+                  <span>
+                    Updated at : {new Date(e.taskUpdatedAt).toDateString()}
+                    {", "}
+                    {new Date(e.taskUpdatedAt).toLocaleTimeString()}
+                  </span>
+                </li>
+              </ul>
+            </div>
+
             <RiEditBoxLine
               onClick={() => {
                 setUpdateModal({
@@ -555,22 +582,6 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
                 className={`dark:text-white text-${todoTheme}`}
               />
             )}
-          </div>
-        </div>
-
-        <div className="hidden w-full flex-row  rounded-md px-4 py-1 text-xs text-slate-500 shadow-md shadow-slate-200 group-hover:flex dark:text-white dark:shadow-black">
-          <div className="flex flex-row items-center gap-2 border-r-2 pr-5 dark:border-black-500">
-            <MdCreateNewFolder size="1.5rem" />
-            <span>
-              Created at : {new Date(e.taskCreatedAt).toLocaleString()}
-            </span>
-          </div>
-
-          <div className="flex flex-row items-center gap-2 pl-5">
-            <MdEditNote size="1.5rem" />
-            <span>
-              Updated at : {new Date(e.taskUpdatedAt).toLocaleString()}
-            </span>
           </div>
         </div>
       </motion.div>
