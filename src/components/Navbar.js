@@ -1,15 +1,9 @@
-import axios from "axios";
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { UserContext } from "../context/UserContext";
 import logo from "../images/homework.png";
 import UserProfile from "./UserProfile";
-axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
-axios.defaults.withCredentials = true;
-axios.defaults.headers = {
-  Authorization: sessionStorage.getItem("bearerToken"),
-};
 
 function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);

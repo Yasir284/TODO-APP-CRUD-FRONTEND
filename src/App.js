@@ -20,9 +20,7 @@ const TasksSection = lazy(() => import("./components/TasksSection"));
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
 axios.defaults.headers = {
-  Authorization: sessionStorage.getItem("bearerToken")
-    ? sessionStorage.getItem("bearerToken")
-    : "",
+  Authorization: sessionStorage.getItem("bearerToken"),
 };
 
 function App() {

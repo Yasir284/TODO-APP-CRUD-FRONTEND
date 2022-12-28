@@ -5,9 +5,6 @@ import { MdClose } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
 import { UserContext } from "../../context/UserContext";
 
-axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
-axios.defaults.withCredentials = true;
-
 const containerVarient = {
   initial: { opacity: 0, scale: 0 },
   animate: {

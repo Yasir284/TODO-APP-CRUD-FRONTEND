@@ -10,9 +10,6 @@ import { MdArrowBackIosNew } from "react-icons/md";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
-axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
-axios.defaults.withCredentials = true;
-
 const containerVarient = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { delay: 0.5 } },

@@ -6,11 +6,6 @@ import { MdLogout } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../context/UserContext";
-axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
-axios.defaults.withCredentials = true;
-axios.defaults.headers = {
-  Authorization: sessionStorage.getItem("bearerToken"),
-};
 
 function UserProfile() {
   const { setIsSignedIn, userInfo, showLoader, hideLoader } =

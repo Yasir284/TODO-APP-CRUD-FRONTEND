@@ -10,12 +10,6 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { UserContext } from "../context/UserContext";
 
-axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
-axios.defaults.withCredentials = true;
-axios.defaults.headers = {
-  Authorization: sessionStorage.getItem("bearerToken"),
-};
-
 const containerVarient = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { delay: 0.5 } },

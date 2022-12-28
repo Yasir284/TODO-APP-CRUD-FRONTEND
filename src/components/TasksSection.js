@@ -28,12 +28,6 @@ import { toast } from "react-toastify";
 import UpdateTask from "./modals/UpdateTask";
 import { UserContext } from "../context/UserContext";
 
-axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
-axios.defaults.withCredentials = true;
-axios.defaults.headers = {
-  Authorization: sessionStorage.getItem("bearerToken"),
-};
-
 const taskUlVarient = {
   initial: { opacity: 0 },
   animate: {
