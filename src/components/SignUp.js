@@ -111,7 +111,7 @@ function SignUp() {
               type={showPass ? "text" : "password"}
               name="password"
               placeholder="Enter password"
-              className="bg-white text-black"
+              className="bg-[#e8f0fe] text-black"
             />
             {showPass ? (
               <FaEye
