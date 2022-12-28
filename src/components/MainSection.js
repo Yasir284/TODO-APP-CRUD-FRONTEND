@@ -34,7 +34,11 @@ export default function MainSection() {
   const searchRef = useRef();
 
   // Getting Todos
-  const getTodos = async () => {
+  const getTodos = async (isSignedIn) => {
+    if (!isSignedIn) {
+      return;
+    }
+
     const { data } = await axios
       .get("/todo/getTodos")
       .catch((error) => error.response);
@@ -67,10 +71,7 @@ export default function MainSection() {
   };
 
   useEffect(() => {
-    if (!isSignedIn) {
-      return;
-    }
-    getTodos();
+    getTodos(isSignedIn);
   }, [setTodos, isSignedIn]);
 
   return (
