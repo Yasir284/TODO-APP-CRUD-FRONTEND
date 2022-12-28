@@ -58,6 +58,7 @@ function SignIn() {
     passwordRef.current.value = "";
 
     navigate("/");
+    window.location.reload();
   };
 
   return (
