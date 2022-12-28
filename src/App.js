@@ -55,8 +55,6 @@ function App() {
     setIsSignedIn(true);
   };
 
-  // Get user info
-
   useEffect(() => {
     checkIsSignedIn();
   }, [setIsSignedIn]);
