@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import useMeasure from "react-use-measure";
@@ -26,6 +26,7 @@ import { RiDeleteBin6Line, RiEditBoxLine } from "react-icons/ri";
 import { useNavigate, NavLink, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UpdateTask from "./modals/UpdateTask";
+import { UserContext } from "../context/UserContext";
 
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
@@ -56,9 +57,10 @@ export default function TasksSection() {
   const [showInProgress, setShowInProgress] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
   const [todo, setTodo] = useState(null);
-
   const [changeTitle, setChangeTitle] = useState(false);
   const [todoTheme, setTodoTheme] = useState(null);
+
+  const { showLoader, hideLoader } = useContext(UserContext);
 
   const { todoId } = useParams();
 
@@ -86,9 +88,13 @@ export default function TasksSection() {
   const handleRename = async (e) => {
     e.preventDefault();
 
+    showLoader();
+
     const { data } = await axios
       .put(`/todo/updateTodo/${todoId}`, { title: titleRef.current.value })
       .catch((error) => error.response);
+
+    hideLoader();
 
     if (!data.success) {
       return toast("Failed to update title", { type: "error" });
@@ -108,9 +114,13 @@ export default function TasksSection() {
       return;
     }
 
+    showLoader();
+
     const { data } = await axios
       .delete(`/todo/deleteTodo/${todoId}`)
       .catch((error) => error.response);
+
+    hideLoader();
 
     if (!data.success) {
       return toast("Failed to delete todo", { type: "error" });
@@ -128,10 +138,15 @@ export default function TasksSection() {
       return toast("Cann't add empty task", { type: "warning" });
     }
 
+    showLoader();
+
     const res = await axios
       .put(`/todo/tasks/createTask/${todoId}`, { task: taskRef.current.value })
       .catch((error) => error.response);
     console.log(res);
+
+    hideLoader();
+
     if (!res.data.success) {
       return toast(res.data.message, { type: "error" });
     }
@@ -144,10 +159,14 @@ export default function TasksSection() {
 
   // Update Theme
   const updateTheme = async (theme) => {
+    showLoader();
+
     const res = await axios
       .put(`/todo/updateTodo/${todoId}`, { todoTheme: theme })
       .catch((error) => error.response);
     console.log("updated theme:", res);
+
+    hideLoader();
 
     if (!res.data.success) {
       return toast("Failed to change theme", { type: "error" });
@@ -169,9 +188,13 @@ export default function TasksSection() {
       return todoById(todoId);
     }
 
+    showLoader();
+
     const { data } = await axios
       .post(`/todo/tasks/searchTasks/${todoId}`, { search })
       .catch((error) => error.response);
+
+    hideLoader();
 
     if (!data.success || data?.todo?.tasks?.length === 0) {
       return toast("Task not found", { type: "info" });
@@ -451,6 +474,7 @@ function ResizeablePanel({ children }) {
 // Task list items component
 function TaskList({ i, e, todoById, todoId, todoTheme }) {
   const [ref, { height }] = useMeasure();
+  const { showLoader, hideLoader } = useContext(UserContext);
   const [updateModal, setUpdateModal] = useState({
     active: false,
     taskId: null,
@@ -458,9 +482,13 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
 
   // Complete Task
   const handleIsCompleted = async (isCompleted, taskId) => {
+    showLoader();
+
     const { data } = await axios
       .put(`/todo/tasks/UpdateTask/${taskId}`, { isCompleted: !isCompleted })
       .catch((error) => error.response);
+
+    hideLoader();
 
     if (!data.success) {
       return toast(data.message, { type: "error" });
@@ -470,9 +498,13 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
 
   // Important Task
   const handleIsImportant = async (isImportant, taskId) => {
+    showLoader();
+
     const { data } = await axios
       .put(`/todo/tasks/UpdateTask/${taskId}`, { isImportant: !isImportant })
       .catch((error) => error.response);
+
+    hideLoader();
 
     if (!data.success) {
       return toast(data.message, { type: "error" });
@@ -482,9 +514,13 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
 
   // Delete Task
   const deleteTask = async (taskId) => {
+    showLoader();
+
     const { data } = await axios
       .delete(`/todo/tasks/deleteTask/${todoId}/${taskId}`)
       .catch((error) => error.response);
+
+    hideLoader();
 
     if (!data.success) {
       return toast("Failed to delete task", { type: "error" });
@@ -528,10 +564,10 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
           </div>
 
           <div className="flex flex-row items-center gap-2">
-            <div className="group relative">
+            <div className="group relative active:scale-90">
               <BiInfoCircle size="1.5rem" />
 
-              <ul className="absolute bottom-10 -right-28 hidden w-[20rem] flex-col rounded-md  bg-white px-4 py-2 text-xs text-slate-500 shadow-md shadow-slate-200 group-active:flex dark:bg-black-800 dark:text-white dark:shadow-black">
+              <ul className="absolute bottom-10 -right-28 hidden w-[22rem] flex-col rounded-md bg-white  px-4 py-2 text-xs text-slate-500 shadow-md shadow-slate-200 group-active:flex dark:bg-black-800 dark:text-white dark:shadow-black">
                 <li className="mb-2 flex flex-row items-center gap-2 border-b-2 pb-2 pr-5 dark:border-black-500">
                   <MdCreateNewFolder size="1.5rem" />
                   <span>
@@ -560,26 +596,26 @@ function TaskList({ i, e, todoById, todoId, todoTheme }) {
                 });
               }}
               title="Edit Task"
-              className="text-emerald-400"
+              className="text-emerald-400 active:scale-90"
               size="1.5rem"
             />
             <RiDeleteBin6Line
               onClick={() => deleteTask(e._id)}
               title="Delete Task"
-              className="text-red-400"
+              className="text-red-400 active:scale-90"
               size="1.5rem"
             />
             {e.isImportant ? (
               <MdStar
                 onClick={() => handleIsImportant(e.isImportant, e._id)}
                 size="1.5rem"
-                className={`dark:text-white text-${todoTheme}`}
+                className={`dark:text-white text-${todoTheme} active:scale-90`}
               />
             ) : (
               <MdStarOutline
                 onClick={() => handleIsImportant(e.isImportant, e._id)}
                 size="1.5rem"
-                className={`dark:text-white text-${todoTheme}`}
+                className={`dark:text-white text-${todoTheme} active:scale-90`}
               />
             )}
           </div>

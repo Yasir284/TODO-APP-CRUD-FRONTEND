@@ -13,15 +13,21 @@ axios.defaults.headers = {
 };
 
 function UserProfile() {
-  const { setIsSignedIn, userInfo } = useContext(UserContext);
+  const { setIsSignedIn, userInfo, showLoader, hideLoader } =
+    useContext(UserContext);
   const navigate = useNavigate();
 
   // Log out function
   const handleLogOut = async () => {
+    showLoader();
+
     const res = await axios
       .get("/todo/u/signOut")
       .catch((error) => error.response);
     console.log(res);
+
+    hideLoader();
+
     if (!res.data.success) {
       return toast(res.data.message, { type: "error" });
     }

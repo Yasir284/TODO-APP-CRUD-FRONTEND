@@ -7,6 +7,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { MdArrowBackIosNew } from "react-icons/md";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
@@ -23,6 +25,7 @@ function SignUp() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [showPass, setShowPass] = useState(false);
+  const { showLoader, hideLoader } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,12 +44,16 @@ function SignUp() {
       password,
     };
 
+    showLoader();
+
     const creatUser = await axios
       .post("/todo/u/signUp", data)
       .catch((error) => {
         return error.response;
       });
     console.log(creatUser);
+
+    hideLoader();
 
     if (!creatUser.data.success) {
       return toast(creatUser.data.message, { type: "error" });

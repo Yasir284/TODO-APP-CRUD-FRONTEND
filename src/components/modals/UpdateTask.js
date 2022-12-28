@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { MdClose } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
+import { UserContext } from "../../context/UserContext";
 
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
@@ -24,6 +25,7 @@ const containerVarient = {
 function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
   console.log(updateModal);
   const editTaskRef = useRef();
+  const { showLoader, hideLoader } = useContext(UserContext);
 
   // Edit Task
   const editTask = async () => {
@@ -33,11 +35,15 @@ function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
       return toast("Add task first", { type: "warning" });
     }
 
+    showLoader();
+
     const { data } = await axios
       .put(`/todo/tasks/updateTask/${updateModal.taskId}`, {
         task: newTask,
       })
       .catch((error) => error.response);
+
+    hideLoader();
 
     if (!data.success) {
       return toast(data.message, { type: "error" });
@@ -51,7 +57,7 @@ function UpdateTask({ setUpdateModal, updateModal, todoId, todoById }) {
   return (
     <AnimatePresence>
       {updateModal.active && (
-        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white bg-opacity-10 text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
+        <div className="fixed top-0 left-0 z-40 flex h-full w-full items-center justify-center bg-white bg-opacity-10 text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
           <motion.div
             key={updateModal.active}
             variants={containerVarient}

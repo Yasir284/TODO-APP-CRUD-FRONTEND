@@ -29,6 +29,7 @@ function App() {
   const [theme, setTheme] = useState("dark");
   const [isSignedIn, setIsSignedIn] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
+  const [loader, setLoader] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -38,6 +39,15 @@ function App() {
       document.documentElement.classList.remove("dark");
     }
   }, [theme]);
+
+  // Show loader function
+  const showLoader = () => {
+    setLoader(true);
+  };
+  // Hide loader function
+  const hideLoader = () => {
+    setLoader(false);
+  };
 
   // Check if user is signed in
   const checkIsSignedIn = async () => {
@@ -67,6 +77,8 @@ function App() {
           setIsSignedIn,
           userInfo,
           setUserInfo,
+          showLoader,
+          hideLoader,
         }}
       >
         <ThemeContext.Provider value={{ theme, setTheme }}>
@@ -76,6 +88,8 @@ function App() {
             theme={theme === "dark" ? "dark" : "light"}
           />
           <Navbar />
+
+          {loader && <Loader />}
 
           <AnimatePresence>
             <Suspense fallback={<Loader />}>

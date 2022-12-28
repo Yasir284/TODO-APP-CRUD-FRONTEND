@@ -28,17 +28,13 @@ const todoListvarient = {
 };
 
 export default function MainSection() {
-  const { isSignedIn } = useContext(UserContext);
+  const { isSignedIn, showLoader, hideLoader } = useContext(UserContext);
   const [todos, setTodos] = useState(null);
   const [showAddTodo, setShowAddTodo] = useState(false);
   const searchRef = useRef();
 
   // Getting Todos
-  const getTodos = async (isSignedIn) => {
-    if (!isSignedIn) {
-      return;
-    }
-
+  const getTodos = async () => {
     const { data } = await axios
       .get("/todo/getTodos")
       .catch((error) => error.response);
@@ -55,13 +51,18 @@ export default function MainSection() {
     e.preventDefault();
     let search = searchRef.current.value;
 
-    if (!search) {
-      return getTodos();
+    showLoader();
+
+    if (!search || search === "") {
+      getTodos();
+      return hideLoader();
     }
 
     const { data } = await axios
       .post("/todo/searchTodos", { search })
       .catch((error) => error.response);
+
+    hideLoader();
 
     if (!data.success) {
       return toast("Todo not found", { type: "info" });
@@ -71,7 +72,10 @@ export default function MainSection() {
   };
 
   useEffect(() => {
-    getTodos(isSignedIn);
+    if (!isSignedIn) {
+      return;
+    }
+    getTodos();
   }, [setTodos, isSignedIn]);
 
   return (
@@ -82,7 +86,7 @@ export default function MainSection() {
       exit="exit"
       className="flex w-full justify-center"
     >
-      <div className="w-full bg-violet-50 p-6 dark:bg-black-900 xs:px-12 xs:py-12 sm:px-32">
+      <div className="w-full bg-violet-50 p-6 dark:bg-black-900 xs:px-12 xs:pb-12 sm:px-32">
         {/**********HEADING***********/}
         <div className="mb-12 flex flex-row items-center justify-between border-b-2 border-violet-600 pb-2 text-violet-600 dark:border-white dark:text-white">
           <div className="flex flex-row items-center gap-6">

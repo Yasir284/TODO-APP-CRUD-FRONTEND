@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { UserContext } from "../context/UserContext";
-import logo from "../images/logo.png";
+import logo from "../images/homework.png";
 import UserProfile from "./UserProfile";
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
@@ -16,7 +16,7 @@ function Navbar() {
 
   const { isSignedIn } = useContext(UserContext);
   return (
-    <nav className="sticky top-0 right-0 z-40 backdrop-blur-sm backdrop-filter ">
+    <nav className="sticky top-0 right-0 z-40 backdrop-blur-sm backdrop-filter">
       <div className="border-b-2 bg-violet-800 bg-opacity-20 px-6 py-4 text-violet-600 dark:border-black-500 dark:bg-black dark:bg-opacity-10 dark:text-white xs:px-12 xs:py-4">
         <div className="relative flex flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-6">
@@ -24,7 +24,7 @@ function Navbar() {
               <img
                 src={logo}
                 alt="logo"
-                className="w-8 brightness-0 drop-shadow-lg filter dark:filter-none"
+                className="w-10 brightness-0 drop-shadow-lg filter dark:filter-none"
               />
               <h1 className="text-2xl font-extrabold">TODO</h1>
             </div>

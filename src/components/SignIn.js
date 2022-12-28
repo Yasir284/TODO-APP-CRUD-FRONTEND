@@ -21,7 +21,8 @@ function SignIn() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [showPass, setShowPass] = useState(false);
-  const { setIsSignedIn, setUserInfo } = useContext(UserContext);
+  const { setIsSignedIn, setUserInfo, showLoader, hideLoader } =
+    useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,23 +38,28 @@ function SignIn() {
       email,
       password,
     };
-    const creatUser = await axios.post("todo/u/signIn", data).catch((error) => {
+
+    showLoader();
+
+    const request = await axios.post("todo/u/signIn", data).catch((error) => {
       return error.response;
     });
-    console.log(creatUser);
+    console.log(request);
 
-    if (!creatUser.data.success) {
-      return toast(creatUser.data.message, { type: "error" });
+    hideLoader();
+
+    if (!request.data.success) {
+      return toast(request.data.message, { type: "error" });
     }
 
-    toast(creatUser.data.message, { type: "success" });
+    toast(request.data.message, { type: "success" });
 
-    let token = "Bearer " + creatUser.data.token;
+    let token = "Bearer " + request.data.token;
 
     sessionStorage.setItem("bearerToken", token);
 
     setIsSignedIn(true);
-    setUserInfo(creatUser.data.user);
+    setUserInfo(request.data.user);
     emailRef.current.value = "";
     passwordRef.current.value = "";
 

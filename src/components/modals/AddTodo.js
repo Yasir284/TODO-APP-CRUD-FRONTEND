@@ -1,10 +1,10 @@
 import axios from "axios";
-import React from "react";
-import { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import { MdAdd, MdClose } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
+import { UserContext } from "../../context/UserContext";
 
 axios.defaults.baseURL = "https://todo-app-crud-backend.onrender.com";
 axios.defaults.withCredentials = true;
@@ -27,6 +27,7 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   const titleRef = useRef();
   const taskRef = useRef();
   const [tasks, setTasks] = useState([]);
+  const { showLoader, hideLoader } = useContext(UserContext);
 
   // Create Todo
   const createTodo = async () => {
@@ -37,10 +38,14 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
     };
     console.log(data);
 
+    showLoader();
+
     const todo = await axios
       .post("/todo/createTodo", data)
       .catch((error) => error.response);
     console.log(todo);
+
+    hideLoader();
 
     if (!todo.data.success) {
       return toast(todo.data.message, { type: "error" });
@@ -80,7 +85,7 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   return (
     <AnimatePresence>
       {showAddTodo && (
-        <div className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-white text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
+        <div className="fixed top-0 left-0 z-40 flex h-full w-full items-center justify-center bg-white text-white backdrop-blur-sm dark:bg-black dark:bg-opacity-10">
           <motion.div
             key={showAddTodo}
             variants={containerVarient}
@@ -128,7 +133,7 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
               </div>
             </form>
 
-            <ul className="mb-4 h-72 w-full rounded-md border-2 border-white p-2">
+            <ul className="mb-4 h-72 w-full overflow-y-auto rounded-md border-2 border-white p-2">
               {tasks.length > 0 ? (
                 tasks.map((e, index) => (
                   <li
