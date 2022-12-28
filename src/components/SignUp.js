@@ -88,7 +88,7 @@ function SignUp() {
             type="text"
             name="fullName"
             placeholder="Enter full name"
-            className="mb-8 w-full rounded-3xl bg-white p-2 px-4 text-black dark:bg-black-500 dark:text-white"
+            className="mb-8 w-full rounded-3xl bg-[#e8f0fe] p-2 px-4 text-black "
           />
 
           <label htmlFor="email" className="ml-2 mb-2">
@@ -99,19 +99,19 @@ function SignUp() {
             type="email"
             name="email"
             placeholder="example@gmail.com"
-            className="mb-8 w-full rounded-3xl bg-white p-2 px-4 text-black dark:bg-black-500 dark:text-white"
+            className="mb-8 w-full rounded-3xl bg-[#e8f0fe] p-2 px-4 text-black"
           />
 
           <label htmlFor="password" className="ml-2 mb-2">
             Password:
           </label>
-          <div className="felx-row mb-8 flex w-full justify-between rounded-3xl bg-white p-2 px-4 dark:bg-black-500">
+          <div className="felx-row mb-8 flex w-full justify-between rounded-3xl bg-[#e8f0fe] p-2 px-4">
             <input
               ref={passwordRef}
               type={showPass ? "text" : "password"}
               name="password"
               placeholder="Enter password"
-              className="bg-white text-black dark:bg-black-500 dark:text-white"
+              className="bg-white text-black"
             />
             {showPass ? (
               <FaEye
