@@ -3,7 +3,7 @@
 
 # Todo app
 
-- This is a fullstack project. In this project I have made a **Todo App** with React and mongoose, which can perform all CRUD operations.
+- This is a fullstack project. In this project I have made a **Todo App** with MERN, which can perform all CRUD operations.
 
 - I have hosted this website on Render, please find the link below:
 
