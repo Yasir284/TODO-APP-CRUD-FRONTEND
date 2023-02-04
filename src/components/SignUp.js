@@ -48,7 +48,6 @@ function SignUp() {
       .catch((error) => {
         return error.response;
       });
-    console.log(creatUser);
 
     hideLoader();
 

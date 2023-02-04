@@ -19,7 +19,6 @@ function UserProfile() {
     const res = await axios
       .get("/todo/u/signOut")
       .catch((error) => error.response);
-    console.log(res);
 
     hideLoader();
 

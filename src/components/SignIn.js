@@ -41,7 +41,8 @@ function SignIn() {
     const request = await axios.post("todo/u/signIn", data).catch((error) => {
       return error.response;
     });
-    console.log(request);
+    let token = "Bearer " + request.data.token;
+    sessionStorage.setItem("bearerToken", token);
 
     hideLoader();
 
@@ -50,10 +51,6 @@ function SignIn() {
     }
 
     toast(request.data.message, { type: "success" });
-
-    let token = "Bearer " + request.data.token;
-
-    sessionStorage.setItem("bearerToken", token);
 
     setIsSignedIn(true);
     setUserInfo(request.data.user);

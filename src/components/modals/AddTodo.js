@@ -33,14 +33,12 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
       title,
       tasks,
     };
-    console.log(data);
 
     showLoader();
 
     const todo = await axios
       .post("/todo/createTodo", data)
       .catch((error) => error.response);
-    console.log(todo);
 
     hideLoader();
 
@@ -74,7 +72,6 @@ function AddTodo({ showAddTodo, setShowAddTodo, setTodos, todos }) {
   // Delete Task
   const deleteTask = (index) => {
     const updateTasks = tasks.filter((e, i) => i !== index);
-    console.log(updateTasks);
 
     setTasks(updateTasks);
   };

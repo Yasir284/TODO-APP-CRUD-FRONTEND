@@ -68,7 +68,6 @@ export default function TasksSection() {
     const { data } = await axios
       .get(`/todo/tasks/getTodoById/${id}`)
       .catch((error) => error.response);
-    console.log("Todo by id :", data);
 
     if (!data.success) {
       return toast(data.message, { type: "error" });
@@ -137,7 +136,6 @@ export default function TasksSection() {
     const res = await axios
       .put(`/todo/tasks/createTask/${todoId}`, { task: taskRef.current.value })
       .catch((error) => error.response);
-    console.log(res);
 
     hideLoader();
 
@@ -158,7 +156,6 @@ export default function TasksSection() {
     const res = await axios
       .put(`/todo/updateTodo/${todoId}`, { todoTheme: theme })
       .catch((error) => error.response);
-    console.log("updated theme:", res);
 
     hideLoader();
 
@@ -168,7 +165,6 @@ export default function TasksSection() {
 
     setTodoTheme(theme);
     todoById(todoId);
-    console.log(todo);
 
     toast("Todo theme changed", { type: "info" });
   };

@@ -52,7 +52,6 @@ function App() {
     const { data } = await axios
       .get("/todo/u/isSignedIn")
       .catch((error) => error.response);
-    console.log("signIn response:", data);
 
     if (!data.success) {
       setIsSignedIn(false);

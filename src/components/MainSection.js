@@ -32,7 +32,6 @@ export default function MainSection() {
     const { data } = await axios
       .get("/todo/getTodos")
       .catch((error) => error.response);
-    console.log("todos response:", data);
 
     if (!data.success) {
       return toast(data.message, { type: "error" });
