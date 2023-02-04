@@ -95,13 +95,13 @@ function SignIn() {
           <label htmlFor="password" className="ml-2 mb-2">
             Password:
           </label>
-          <div className="felx-row mb-8 flex w-full justify-between rounded-3xl bg-[#e8f0fe] p-2 px-4">
+          <div className="mb-8 flex w-full flex-row justify-between rounded-3xl bg-[#e8f0fe] p-2 px-4">
             <input
               ref={passwordRef}
               type={showPass ? "text" : "password"}
               name="password"
               placeholder="Enter password"
-              className="bg-white text-black dark:bg-black-500 dark:text-white"
+              className="bg-[#e8f0fe] text-black dark:text-white"
             />
             {showPass ? (
               <FaEye

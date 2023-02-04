@@ -214,11 +214,6 @@ export default function TasksSection() {
     },
     {
       style:
-        "shadow-lg shadow-slate-400 dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-green-600",
-      changeTheme: () => updateTheme("green"),
-    },
-    {
-      style:
         "shadow-lg shadow-slate-400 dark:shadow-black active:scale-50 hover:scale-125 transition-all ease-in-out duration-200 w-6 h-6 rounded-full bg-split-white-black",
       changeTheme: () => updateTheme("black-white"),
     },
@@ -294,7 +289,7 @@ export default function TasksSection() {
                   <span>Change Theme</span>
                   <MdKeyboardArrowRight size="1.2rem" />
 
-                  <div className="absolute top-12 -right-44 hidden cursor-pointer flex-row gap-4 rounded-md bg-white px-4 py-4 shadow-md shadow-slate-400 group-hover:flex dark:bg-black-700 dark:shadow-black">
+                  <div className="absolute top-12 -right-[136px] hidden cursor-pointer flex-row gap-4 rounded-md bg-white px-4 py-4 shadow-md shadow-slate-400 group-hover:flex dark:bg-black-700 dark:shadow-black">
                     {selectTheme.map(({ style, changeTheme }, index) => {
                       return (
                         <div
