@@ -74,6 +74,7 @@ function SignIn() {
           Sign In
         </h1>
 
+        {/* Signin form */}
         <form
           onSubmit={handleSubmit}
           className="flex w-96 flex-col items-start"
