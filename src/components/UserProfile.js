@@ -26,8 +26,9 @@ function UserProfile() {
       return toast(res.data.message, { type: "error" });
     }
     sessionStorage.clear();
+    localStorage.clear();
     setIsSignedIn(false);
-    navigate("/");
+    navigate("/signIn");
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
@@ -24,17 +24,22 @@ axios.defaults.headers = {
 };
 
 function App() {
-  const [theme, setTheme] = useState("dark");
+  const navigate = useNavigate();
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
+  );
   const [isSignedIn, setIsSignedIn] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loader, setLoader] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    if (theme === "dark") {
+    if (localStorage.getItem("theme") === "dark") {
       document.documentElement.classList.add("dark");
+      document.getElementById("toggle").removeAttribute("checked", false);
     } else {
       document.documentElement.classList.remove("dark");
+      document.getElementById("toggle").setAttribute("checked", true);
     }
   }, [theme]);
 
@@ -48,23 +53,36 @@ function App() {
   };
 
   // Check if user is signed in
-  const checkIsSignedIn = async () => {
-    const { data } = await axios
-      .get("/todo/u/isSignedIn")
-      .catch((error) => error.response);
-
-    if (!data.success) {
-      setIsSignedIn(false);
-      return toast("Sign in/Sign up first", { type: "warning" });
-    }
-
-    setUserInfo(data.user);
-    setIsSignedIn(true);
-  };
+  // const checkIsSignedIn = async (navigate) => {
+  // if (
+  //   JSON.parse(localStorage.getItem("userInfo")) &&
+  //   JSON.parse(localStorage.getItem("userInfo")) !== (null || undefined || "")
+  // ) {
+  //   console.log("hello");
+  //   setIsSignedIn(true);
+  //   setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
+  //   return;
+  // }
+  // const { data } = await axios
+  //   .get("/todo/u/isSignedIn")
+  //   .catch((error) => error.response);
+  // if (!data.success) {
+  //   setIsSignedIn(false);
+  //   navigate("/signIn");
+  //   return;
+  // }
+  // setUserInfo(data.user);
+  // setIsSignedIn(true);
+  // };
 
   useEffect(() => {
-    checkIsSignedIn();
-  }, [setIsSignedIn]);
+    if (!JSON.parse(localStorage.getItem("userInfo"))) {
+      navigate("/signIn");
+      return;
+    }
+    setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
+    setIsSignedIn(true);
+  }, [navigate]);
 
   return (
     <>

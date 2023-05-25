@@ -9,6 +9,12 @@ function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext);
 
   const { isSignedIn } = useContext(UserContext);
+
+  function changeTheme() {
+    setTheme(theme === "dark" ? "light" : "dark");
+    localStorage.setItem("theme", theme === "dark" ? "light" : "dark");
+  }
+
   return (
     <nav className="sticky top-0 right-0 z-40 backdrop-blur-sm backdrop-filter">
       <div className="border-b-2 bg-violet-800 bg-opacity-20 px-6 py-4 text-violet-600 dark:border-black-500 dark:bg-black dark:bg-opacity-10 dark:text-white xs:px-12 xs:py-4">
@@ -38,7 +44,7 @@ function Navbar() {
                   name="toggle"
                   id="toggle"
                   className="toggle-checkbox darkbg-white absolute block h-6 w-6 cursor-pointer appearance-none rounded-full border-4 border-white transition-all duration-200 ease-in-out dark:border-black-500 dark:bg-violet-600"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  onClick={changeTheme}
                 />
                 <label
                   htmlFor="toggle"

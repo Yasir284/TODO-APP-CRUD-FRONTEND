@@ -43,6 +43,7 @@ function SignIn() {
     });
     let token = "Bearer " + request.data.token;
     sessionStorage.setItem("bearerToken", token);
+    localStorage.setItem("userInfo", JSON.stringify(request.data.user));
 
     hideLoader();
 
