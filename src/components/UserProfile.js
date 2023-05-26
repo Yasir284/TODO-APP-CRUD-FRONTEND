@@ -39,7 +39,7 @@ function UserProfile() {
 
       <div
         onClick={handleLogOut}
-        className="rounded-3xl px-4 py-2 font-semibold transition-all duration-200 ease-in-out hover:bg-white hover:text-red-600 active:scale-50 dark:hover:bg-red-600 dark:hover:text-white"
+        className="rounded-3xl px-4 py-2 font-semibold transition-all duration-200 ease-in-out hover:bg-white hover:text-red-600 active:scale-95 dark:hover:bg-red-600 dark:hover:text-white"
       >
         <span className="cursor-pointer">Sign out</span>
         <MdLogout size="1.5rem" className="ml-2 inline-block" />

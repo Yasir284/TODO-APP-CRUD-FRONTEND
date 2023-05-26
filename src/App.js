@@ -82,7 +82,8 @@ function App() {
     }
     setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
     setIsSignedIn(true);
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
